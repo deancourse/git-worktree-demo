@@ -1,13 +1,16 @@
 import { SOCIAL_PROOF } from '../data/socialProof';
+import { useI18n } from '../contexts/I18nContext';
 
 function SocialProof() {
-    const { heading, logos, testimonial } = SOCIAL_PROOF;
+    const { t } = useI18n();
+    const { logos } = SOCIAL_PROOF; // Keep logos from data file
+    const testimonial = t('socialProof.testimonial');
 
     return (
         <section className="social-proof" id="social-proof" aria-labelledby="social-proof-title">
             <div className="container">
                 <p id="social-proof-title" className="social-proof__heading">
-                    {heading}
+                    {t('socialProof.heading')}
                 </p>
 
                 <div className="social-proof__logos" role="list" aria-label="客戶企業列表">
