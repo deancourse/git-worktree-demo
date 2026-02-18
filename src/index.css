@@ -1243,3 +1243,100 @@ button {
     grid-template-columns: 1fr;
   }
 }
+
+/* ========================================
+   FAQ
+   ======================================== */
+.faq {
+  padding: var(--space-20) 0;
+  background: var(--color-bg);
+}
+
+.faq__grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.faq__item {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-card);
+  overflow: hidden;
+  transition: all var(--transition-base);
+}
+
+.faq__item--open {
+  border-color: var(--color-primary-glow);
+  background: var(--color-bg-elevated);
+}
+
+.faq__question {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-6);
+  text-align: left;
+  background: transparent;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.faq__question:hover {
+  background: var(--color-bg-card-hover);
+}
+
+.faq__question-text {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.4;
+  padding-right: var(--space-4);
+}
+
+.faq__icon {
+  font-size: var(--text-xl);
+  font-weight: 400;
+  color: var(--color-primary-light);
+  min-width: 24px;
+  text-align: center;
+  transition: transform var(--transition-base);
+}
+
+.faq__answer-wrapper {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height var(--transition-slow), opacity var(--transition-slow);
+  opacity: 0;
+}
+
+.faq__item--open .faq__answer-wrapper {
+  max-height: 500px; /* Adjust based on content length */
+  opacity: 1;
+}
+
+.faq__answerWrapperInner {
+  padding: 0 var(--space-6) var(--space-6);
+}
+
+.faq__answer {
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+
+@media (max-width: 640px) {
+  .faq__question {
+    padding: var(--space-4);
+  }
+  
+  .faq__question-text {
+    font-size: var(--text-base);
+  }
+
+  .faq__answerWrapperInner {
+    padding: 0 var(--space-4) var(--space-4);
+  }
+}
