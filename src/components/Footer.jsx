@@ -1,4 +1,5 @@
 import { FOOTER_DATA } from '../data/footer';
+import { useI18n } from '../contexts/I18nContext';
 
 const SOCIAL_ICONS = {
     fb: (
@@ -24,7 +25,10 @@ const SOCIAL_ICONS = {
 };
 
 function Footer() {
-    const { brand, columns, social, copyright } = FOOTER_DATA;
+    const { t } = useI18n();
+    const { brand, social } = FOOTER_DATA;
+    const footerData = t('footer');
+    const columns = footerData.cols || [];
 
     return (
         <footer className="footer" role="contentinfo">
@@ -35,7 +39,7 @@ function Footer() {
                             <span className="footer__logo-icon" aria-hidden="true">◆</span>
                             {brand.name}
                         </a>
-                        <p className="footer__brand-desc">{brand.description}</p>
+                        <p className="footer__brand-desc">{footerData.brandDesc}</p>
                         <div className="footer__social" role="list" aria-label="社群媒體連結">
                             {social.map((s) => (
                                 <a
@@ -52,14 +56,14 @@ function Footer() {
                     </div>
 
                     <div className="footer__columns">
-                        {columns.map((col) => (
-                            <div key={col.title} className="footer__column">
+                        {columns.map((col, i) => (
+                            <div key={i} className="footer__column">
                                 <h3 className="footer__column-title">{col.title}</h3>
                                 <ul className="footer__column-list">
-                                    {col.links.map((link) => (
-                                        <li key={link.label}>
-                                            <a href={link.href} className="footer__column-link">
-                                                {link.label}
+                                    {col.links.map((link, j) => (
+                                        <li key={j}>
+                                            <a href="#" className="footer__column-link">
+                                                {link}
                                             </a>
                                         </li>
                                     ))}
@@ -70,7 +74,7 @@ function Footer() {
                 </div>
 
                 <div className="footer__bottom">
-                    <p className="footer__copyright">{copyright}</p>
+                    <p className="footer__copyright">{footerData.copyright}</p>
                 </div>
             </div>
         </footer>

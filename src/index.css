@@ -1243,3 +1243,259 @@ button {
     grid-template-columns: 1fr;
   }
 }
+
+/* ========================================
+   THEMING & NEW FEATURES
+   ======================================== */
+
+/* Dark Mode (Default) / Light Mode Overrides */
+[data-theme='light'] {
+  --color-bg: #f8fafc;
+  --color-bg-elevated: #ffffff;
+  --color-bg-card: #ffffff;
+  --color-bg-card-hover: #f1f5f9;
+  --color-surface: #e2e8f0;
+
+  --color-text: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-muted: #64748b;
+  --color-text-inverse: #f1f5f9;
+
+  --color-border: #e2e8f0;
+  --color-border-hover: #cbd5e1;
+  
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.15);
+}
+
+/* Navbar Actions */
+.navbar__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.btn-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-lg);
+  transition: background var(--transition-fast);
+}
+
+.btn-icon:hover {
+  background: var(--color-surface);
+}
+
+/* Pricing Toggle */
+.pricing__toggle-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-10);
+}
+
+.pricing__toggle-label {
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  transition: color var(--transition-base);
+}
+
+.pricing__toggle-label.active {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.pricing__toggle-label .highlight {
+  color: var(--color-primary);
+  font-size: var(--text-sm);
+  margin-left: var(--space-1);
+}
+
+.pricing__toggle-btn {
+  width: 52px;
+  height: 28px;
+  background: var(--color-surface);
+  border-radius: var(--radius-full);
+  padding: 2px;
+  position: relative;
+  transition: background var(--transition-base);
+}
+
+.pricing__toggle-btn.active {
+  background: var(--color-primary);
+}
+
+.pricing__toggle-thumb {
+  width: 24px;
+  height: 24px;
+  background: white;
+  border-radius: 50%;
+  transition: transform var(--transition-base);
+  box-shadow: var(--shadow-sm);
+}
+
+.pricing__toggle-btn.active .pricing__toggle-thumb {
+  transform: translateX(24px);
+}
+
+/* FAQ Section */
+.faq-section {
+  padding: var(--space-24) 0;
+  background: var(--color-bg);
+}
+
+.faq-list {
+  max-width: 800px;
+  margin: var(--space-12) auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.faq-item {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-card);
+  overflow: hidden;
+  transition: all var(--transition-base);
+}
+
+.faq-item:hover {
+  border-color: var(--color-border-hover);
+}
+
+.faq-question {
+  padding: var(--space-5) var(--space-6);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.faq-toggle {
+  font-size: var(--text-xl);
+  color: var(--color-primary);
+  font-weight: 400;
+}
+
+.faq-answer {
+  padding: 0 var(--space-6) var(--space-6);
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  border-top: 1px solid transparent;
+}
+
+.faq-item.open .faq-answer {
+  border-top-color: var(--color-border);
+  padding-top: var(--space-4);
+}
+
+/* Loading */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  gap: var(--space-4);
+  background: var(--color-bg);
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--color-surface);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Cookie Consent */
+.cookie-consent {
+  position: fixed;
+  bottom: var(--space-6);
+  left: var(--space-6);
+  right: var(--space-6);
+  max-width: 400px;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.cookie-consent p {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.cookie-consent button {
+  background: var(--color-primary);
+  color: white;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  align-self: flex-end;
+  transition: background var(--transition-fast);
+}
+
+.cookie-consent button:hover {
+  background: var(--color-primary-dark);
+}
+
+/* Navbar Fix for Mobile */
+@media (max-width: 768px) {
+  .cookie-consent {
+    left: var(--space-4);
+    right: var(--space-4);
+    bottom: var(--space-4);
+  }
+}
+
+/* ========================================
+   Navbar Light Mode Fixes
+   ======================================== */
+[data-theme='light'] .navbar {
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
+[data-theme='light'] .navbar__logo {
+  color: var(--color-primary);
+}
+
+[data-theme='light'] .navbar__link {
+  color: var(--color-text-secondary);
+}
+
+[data-theme='light'] .navbar__link:hover {
+  color: var(--color-primary);
+}
