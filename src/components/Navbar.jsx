@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { NAV_LINKS, BRAND } from '../data/navigation';
+import ThemeToggle from './ThemeToggle';
 
-function Navbar() {
+function Navbar({ theme, toggleTheme }) {
     const [menuOpen, setMenuOpen] = useState(false);
 
     return (
@@ -39,6 +40,10 @@ function Navbar() {
                             </li>
                         ))}
                     </ul>
+
+                    {/* Theme Toggle Button */}
+                    <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
+
                     <a href="#demo" className="btn btn--primary btn--sm navbar__cta">
                         預約 Demo
                     </a>
