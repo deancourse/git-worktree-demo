@@ -12,6 +12,19 @@
   </head>
   <body>
     <div id="root"></div>
+
+    <div id="cookie-banner" class="cookie-banner" style="display: none;">
+      <div class="cookie-banner-content">
+        <h3>隱私與 Cookie 政策</h3>
+        <p>我們使用 Cookie 來確保您在我們的網站上獲得最佳體驗。點擊「同意」表示您接受我們的 Cookie 政策。</p>
+      </div>
+      <div class="cookie-banner-actions">
+        <button id="cookie-btn-decline" class="cookie-btn btn-secondary">拒絕 (Decline)</button>
+        <button id="cookie-btn-accept" class="cookie-btn btn-primary">同意 (Accept)</button>
+      </div>
+    </div>
+
+    <script type="module" src="/src/cookie-consent.js"></script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
