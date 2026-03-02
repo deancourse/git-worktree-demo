@@ -82,6 +82,38 @@
   /* Layout */
   --container-max: 1200px;
   --navbar-height: 72px;
+
+  /* Navbar overlay (for theme) */
+  --navbar-bg: rgba(10, 14, 26, 0.8);
+}
+
+/* --- 淺色主題 --- */
+[data-theme="light"] {
+  --color-bg: #f8fafc;
+  --color-bg-elevated: #ffffff;
+  --color-bg-card: #ffffff;
+  --color-bg-card-hover: #f1f5f9;
+  --color-surface: #e2e8f0;
+
+  --color-primary: #4f46e5;
+  --color-primary-light: #6366f1;
+  --color-primary-dark: #4338ca;
+  --color-primary-glow: rgba(79, 70, 229, 0.2);
+
+  --color-text: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-muted: #64748b;
+  --color-text-inverse: #f1f5f9;
+
+  --color-border: rgba(15, 23, 42, 0.12);
+  --color-border-hover: rgba(15, 23, 42, 0.25);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 0 40px var(--color-primary-glow);
+
+  --navbar-bg: rgba(248, 250, 252, 0.9);
 }
 
 /* --- Reset & Base --- */
@@ -256,7 +288,7 @@ button {
   right: 0;
   height: var(--navbar-height);
   z-index: 1000;
-  background: rgba(10, 14, 26, 0.8);
+  background: var(--navbar-bg);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--color-border);
 }
@@ -290,6 +322,24 @@ button {
 .navbar__list {
   display: flex;
   gap: var(--space-6);
+}
+
+.navbar__theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 1.25rem;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.navbar__theme-toggle:hover {
+  background: var(--color-border-hover);
+  transform: scale(1.05);
 }
 
 .navbar__link {
@@ -365,6 +415,10 @@ button {
 
   .navbar__link {
     font-size: var(--text-lg);
+  }
+
+  .navbar__theme-toggle {
+    margin-top: var(--space-4);
   }
 
   .navbar__cta {
