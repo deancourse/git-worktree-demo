@@ -1243,3 +1243,107 @@ button {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* ========================================
+   FAQ
+   ======================================== */
+.faq {
+  padding: var(--space-24) 0;
+  background: var(--color-bg);
+  position: relative;
+}
+
+.faq__list {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.faq__item {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  transition: all var(--transition-base);
+}
+
+.faq__item:hover {
+  border-color: var(--color-border-hover);
+  background: var(--color-bg-card-hover);
+}
+
+.faq__item--open {
+  border-color: var(--color-primary-glow);
+  box-shadow: var(--shadow-md);
+}
+
+.faq__question {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-6);
+  text-align: left;
+  gap: var(--space-4);
+}
+
+.faq__question-text {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.4;
+}
+
+.faq__icon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  transition: all var(--transition-base);
+}
+
+.faq__item--open .faq__icon {
+  background: var(--color-primary-glow);
+  color: var(--color-primary-light);
+  transform: rotate(180deg);
+}
+
+.faq__answer-wrapper {
+  overflow: hidden;
+  transition: height var(--transition-base);
+}
+
+.faq__answer {
+  padding: 0 var(--space-6) var(--space-6);
+  color: var(--color-text-secondary);
+  font-size: var(--text-base);
+  line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+  .faq {
+    padding: var(--space-16) 0;
+  }
+  
+  .faq__question {
+    padding: var(--space-4);
+  }
+
+  .faq__question-text {
+    font-size: var(--text-base);
+  }
+
+  .faq__answer {
+    padding: 0 var(--space-4) var(--space-4);
+    font-size: var(--text-sm);
+  }
+}
+
