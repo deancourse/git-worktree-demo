@@ -1243,3 +1243,100 @@ button {
     grid-template-columns: 1fr;
   }
 }
+
+/* ========================================
+   QA SECTION
+   ======================================== */
+.qa-section {
+  padding: var(--space-24) 0;
+  background: var(--color-bg);
+}
+
+.qa-section__list {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.qa-section__item {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  transition: all var(--transition-base);
+}
+
+.qa-section__item:hover {
+  border-color: var(--color-border-hover);
+  background: var(--color-bg-card-hover);
+}
+
+.qa-section__item--open {
+  border-color: var(--color-primary-light);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.qa-section__question {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-6);
+  text-align: left;
+}
+
+.qa-section__question h3 {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-text);
+  padding-right: var(--space-4);
+  margin: 0;
+}
+
+.qa-section__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  transition: transform var(--transition-base), background var(--transition-base), color var(--transition-base);
+  flex-shrink: 0;
+}
+
+.qa-section__item--open .qa-section__icon {
+  transform: rotate(180deg);
+  background: var(--color-primary-glow);
+  color: var(--color-primary-light);
+}
+
+.qa-section__answer-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--transition-base);
+}
+
+.qa-section__item--open .qa-section__answer-wrapper {
+  grid-template-rows: 1fr;
+}
+
+.qa-section__answer {
+  overflow: hidden;
+}
+
+.qa-section__answer p {
+  padding: 0 var(--space-6) var(--space-6);
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+  .qa-section {
+    padding: var(--space-16) 0;
+  }
+}
