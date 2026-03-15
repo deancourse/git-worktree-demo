@@ -1243,3 +1243,109 @@ button {
     grid-template-columns: 1fr;
   }
 }
+
+/* ========================================
+   QA (FAQ) SECTION
+   ======================================== */
+.qa {
+  padding: var(--space-24) 0;
+  background: var(--color-bg);
+}
+
+.qa__accordion {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.qa__item {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all var(--transition-base);
+}
+
+.qa__item:hover {
+  border-color: var(--color-border-hover);
+  background: var(--color-bg-card-hover);
+}
+
+.qa__item--active {
+  border-color: var(--color-primary-glow);
+  box-shadow: 0 0 20px var(--color-primary-glow);
+  background: var(--color-bg-card-hover);
+}
+
+.qa__button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-5) var(--space-8);
+  text-align: left;
+  gap: var(--space-4);
+}
+
+.qa__question {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-text);
+  transition: color var(--transition-fast);
+}
+
+.qa__item:hover .qa__question,
+.qa__item--active .qa__question {
+  color: var(--color-primary-light);
+}
+
+.qa__icon {
+  font-size: var(--text-2xl);
+  font-weight: 400;
+  color: var(--color-text-muted);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+}
+
+.qa__item--active .qa__icon {
+  color: var(--color-primary-light);
+  transform: rotate(180deg);
+}
+
+.qa__content {
+  overflow: hidden;
+  transition: all var(--transition-slow);
+}
+
+.qa__answer {
+  padding: 0 var(--space-8) var(--space-6) var(--space-8);
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+  font-size: var(--text-base);
+}
+
+@media (max-width: 768px) {
+  .qa {
+    padding: var(--space-16) 0;
+  }
+
+  .qa__button {
+    padding: var(--space-4) var(--space-6);
+  }
+
+  .qa__question {
+    font-size: var(--text-base);
+  }
+
+  .qa__answer {
+    padding: 0 var(--space-6) var(--space-4) var(--space-6);
+    font-size: var(--text-sm);
+  }
+}
+
