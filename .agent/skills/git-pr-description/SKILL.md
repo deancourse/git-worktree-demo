@@ -1,179 +1,183 @@
 ---
 name: Git PR Description
-description: 根據當前 branch 與目標 branch 的差異，自動產生 Pull Request 的 Title 與 Description。當使用者提到「PR」、「Pull Request」、「寫 PR」、「PR 描述」、「PR description」、「建立 PR」時觸發此 Skill。
+description: 根据当前 branch 与目标 branch 的差异，自动产生 Pull Request 的 Title 与 Description。当用户提到“PR”、“Pull Request”、“写 PR”、“PR 描述”、“PR description”、“建立 PR”时触发此 Skill。
 ---
 
-# Git PR Description — 自動產生 PR 標題與描述
+# Git PR Description — 自动生成 PR 标题与描述
 
-根據當前 branch 相對於目標 branch（預設 `master`）的所有 commit 與 diff，產出結構化的 PR Title 與 Description。
+根据当前 branch 相对于目标 branch（默认 `master`）的所有 commit 与 diff，产出结构化的 PR Title 与 Description。
 
 ---
 
 ## 流程
 
-### 1. 確認分支資訊
+### 1. 确认分支信息
 
-取得當前 branch 名稱與目標 branch：
+取得当前 branch 名称与目标 branch：
 
 ```bash
 git branch --show-current
 ```
 
-預設目標 branch 為 `master`。若使用者指定其他 base branch，以使用者指定為準。
+默认目标 branch 为 `master`。若用户指定其他 base branch，以用户指定为准。
 
-確認當前 branch 相對於目標 branch 有 commit 差異：
+确认当前 branch 相对于目标 branch 有 commit 差异：
 
 ```bash
 git log --oneline master..HEAD
 ```
 
-若無差異，告知使用者「當前 branch 與目標 branch 沒有差異」後結束。
+若无差异，告知用户“当前 branch 与目标 branch 没有差异”后结束。
 
 ---
 
-### 2. 蒐集變更資訊
+### 2. 搜集变更信息
 
-取得完整的 commit 列表與 diff：
+取得完整的 commit 列表与 diff：
 
 ```bash
 # commit 摘要
 git log --oneline master..HEAD
 
-# 詳細 commit 訊息
+# 详细 commit 信息
 git log --format="%h %s%n%b" master..HEAD
 
-# 變更檔案統計
+# 变更文件统计
 git diff --stat master..HEAD
 
-# 完整 diff（用於分析具體改動）
+# 完整 diff（用于分析具体改动）
 git diff master..HEAD
 ```
 
 ---
 
-### 3. 分析變更內容
+### 3. 分析变更内容
 
-根據蒐集到的資訊，分析：
+根据搜集到的信息，分析：
 
-- **變更的目的**：這個 branch 要解決什麼問題或新增什麼功能
-- **修改範圍**：涉及哪些元件、模組、設定檔
-- **影響層面**：是否有破壞性變更、是否影響既有功能
+- **变更的目的**：这个 branch 要解决什么问题或新增什么功能
+- **修改范围**：涉及哪些组件、模块、配置文件
+- **影响层面**：是否有破坏性变更、是否影响既有功能
 
 ---
 
-### 4. 產生 PR Title
+### 4. 产生 PR Title
 
 #### Title 格式
 
 ```
-<type>: <簡短描述>
+<type>: <简短描述>
 ```
 
-**type 對照表：**
+**type 对照表：**
 
-| type | 使用時機 |
+| type | 使用时机 |
 |------|----------|
 | `feat` | 新增功能 |
-| `fix` | 修復 bug |
-| `refactor` | 重構 |
-| `style` | 樣式調整 |
-| `chore` | 雜務、設定 |
-| `docs` | 文件更新 |
-| `test` | 測試相關 |
+| `fix` | 修复 bug |
+| `refactor` | 重构 |
+| `style` | 样式调整 |
+| `chore` | 杂务、配置 |
+| `docs` | 文档更新 |
+| `test` | 测试相关 |
 
-**Title 規則：**
+**Title 规则：**
 
-- 使用繁體中文描述
-- 不超過 72 字
-- 用動詞開頭：新增、調整、修正、移除、重構
-- 精準描述此 PR 的核心目的
+- 使用简体中文描述
+- 不超过 72 字
+- 用动词开头：新增、调整、修正、移除、重构
+- 精准描述此 PR 的核心目的
 
 ---
 
-### 5. 產生 PR Description
+### 5. 产生 PR Description
 
-使用 `references/pr-template.md` 中的模板產生 Description。
+使用 `references/pr-template.md` 中的模板产生 Description。
 
-#### Description 結構
+#### Description 结构
 
 ```markdown
-## 🎯 為什麼要這樣做
+## 🎯 为什么要这样做
 
-簡述此 PR 的背景與動機
+简述此 PR 的背景与动机
 
-## ⚠️ 修改的內容
+## ⚠️ 修改的内容
 
-依功能與需求分組：
-- **功能名稱 / 需求項目**：說明此組變更的業務目標
-- **修改方向**：簡述（效能、修復、樣式等）
-- **內容**：列出具體修改點，**禁止**出現任何檔案路徑（包含相對路徑），一律改用功能描述，例如「新增手風琴展開動畫」而非「修改 `src/components/FAQ.jsx`」
+依功能与需求分组：
+- **功能名称 / 需求项目**：说明此组变更的业务目标
+- **修改方向**：简述（性能、修复、样式等）
+- **内容**：列出具体修改点，**禁止**出现任何文件路径（包含相对路径），一律改用功能描述，例如“新增手风琴展开动画”而非“修改 `src/components/FAQ.jsx`”
 
-### [功能名稱 / 需求項目]
+### [功能名称 / 需求项目]
 - **修改方向**：...
-- **內容**：
-  - 具體修改點 1（純功能描述）
-  - 具體修改點 2（純功能描述）
+- **内容**：
+  - 具体修改点 1（纯功能描述）
+  - 具体修改点 2（纯功能描述）
 
-### [另一個功能名稱]
+### [另一个功能名称]
 - **修改方向**：...
-- **內容**：
+- **内容**：
   - ...
 
-## 🧪 測試步驟
+## 🧪 测试步骤
 
-> **規則：必須為「修改的內容」中列出的每一個模組 / 元件都產生至少一個對應的測試案例，確保所有變更皆被涵蓋。**
+> **规则：必须为“修改的内容”中列出的每一个模块 / 组件都产生至少一个对应的测试案例，确保所有变更皆被涵盖。**
 
-### 測試案例 1：[針對模組 A 的測試情境]
+### 测试案例 1：[针对模块 A 的测试情境]
 
-1. 操作步驟一
-2. 操作步驟二
-3. **預期結果**：描述預期行為
+1. 操作步骤一
+2. 操作步骤二
+3. **预期结果**：描述预期行为
 
-### 測試案例 2：[針對模組 B 的測試情境]
+### 测试案例 2：[针对模块 B 的测试情境]
 
-1. 操作步驟一
-2. 操作步驟二
-3. **預期結果**：描述預期行為
+1. 操作步骤一
+2. 操作步骤二
+3. **预期结果**：描述预期行为
 
-### 測試案例 N：[依此類推，直到所有變更模組皆有對應測試]
+### 测试案例 N：[依此类推，直到所有变更模块皆有对应测试]
 ```
 
 ---
 
-### 6. 輸出結果
+### 6. 输出结果
 
-將完整的 PR Title + Description 以 **markdown code block** 的形式輸出，讓使用者可以直接複製貼上到 GitHub PR。
+将完整的 PR Title + Description 以 **markdown code block** 的形式输出，让用户可以直接复制粘贴到 GitHub PR。
 
-輸出格式（整段用 markdown code block 包裹）：
+输出格式（整段用 markdown code block 包裹）：
 
 ````
 ```markdown
 <title>
 
-<description 完整 markdown 內容，包含 ##、###、列表等格式>
+<description 完整 markdown 内容，包含 ##、###、列表等格式>
 ```
 ````
 
-**注意事項：**
-- 不要在 code block 外面加額外的 `📝 PR Title:` 等前綴，直接輸出可複製的 markdown
-- code block 內的第一行為 PR Title，空一行後接 Description
-- 使用者可要求調整任何部分後再複製使用
-- **重要**：Description 中**禁止**出現任何檔案路徑（包含相對路徑），一律改用純功能描述。
+**注意事项：**
+- 不要在 code block 外面加额外的 `📝 PR Title:` 等前缀，直接输出可复制的 markdown
+- code block 内的第一行为 PR Title，空一行后接 Description
+- 用户可要求调整任何部分后再复制使用
+- **重要**：Description 中**禁止**出现任何文件路径（包含相对路径），一律改用纯功能描述。
 
 ---
 
-## 🛑 格式嚴格規範
+## 🛑 格式严格规范
 
-- **禁止任何 Markdown 連結格式**：`[文字](...)`
+- **禁止任何 Markdown 链接格式**：`[文字](...)`
 - **禁止任何 URI / scheme**：比如 `file://`、`cci:`
-- **禁止出現任何檔案路徑**：不論相對或絕對路徑，一律不出現在 Description 中，改以純功能描述取代
+- **禁止出现任何文件路径**：不论相对或绝对路径，一律不出现在 Description 中，改以纯功能描述取代
 
-## 邊界情況處理
+---
 
-- **存在未提交的變更**：提醒使用者先提交或 stash，避免遺漏
+## 边界情况处理
 
-## Additional Resources
+- **存在未提交的变更**：提醒用户先提交或 stash，避免遗漏
 
-### Reference Files
+---
 
-- **`references/pr-template.md`** — PR Description 的完整模板，可依團隊需求客製化
+## 其他资源
+
+### 参考文件
+
+- **`references/pr-template.md`** — PR Description 的完整模板，可依团队需求定制化

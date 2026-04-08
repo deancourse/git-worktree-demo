@@ -1,256 +1,253 @@
 ---
 name: Skill Development
-description: This skill should be used when the user wants to "create a skill", "add a skill to plugin", "write a new skill", "improve skill description", "organize skill content", or needs guidance on skill structure, progressive disclosure, or skill development best practices for Claude Code plugins.
+description: 当用户想要“创建 Skill”、“将 Skill 添加到插件”、“编写新 Skill”、“改进 Skill 描述”、“整理 Skill 内容”或需要有关 Claude Code 插件的 Skill 结构、渐进式披露或 Skill 开发最佳实践的指导时，应使用此 Skill。
 version: 0.1.0
 ---
 
-# Skill Development for Claude Code Plugins
+# Claude Code 插件的 Skill 开发
 
-This skill provides guidance for creating effective skills for Claude Code plugins.
+此 Skill 为创建有效的 Claude Code 插件 Skill 提供指导。
 
-## About Skills
+## 关于 Skill
 
-Skills are modular, self-contained packages that extend Claude's capabilities by providing
-specialized knowledge, workflows, and tools. Think of them as "onboarding guides" for specific
-domains or tasks—they transform Claude from a general-purpose agent into a specialized agent
-equipped with procedural knowledge that no model can fully possess.
+Skill 是模块化的、自包含的软件包，通过提供专业知识、工作流和工具来扩展 Claude 的能力。可以将它们视为针对特定领域或任务的“入职指南”——它们将 Claude 从一个通用型智能体转变为一个具备任何模型都无法完全拥有的过程性知识的专业型智能体。
 
-### What Skills Provide
+### Skill 提供什么
 
-1. Specialized workflows - Multi-step procedures for specific domains
-2. Tool integrations - Instructions for working with specific file formats or APIs
-3. Domain expertise - Company-specific knowledge, schemas, business logic
-4. Bundled resources - Scripts, references, and assets for complex and repetitive tasks
+1. 专业工作流 - 针对特定领域的多个步骤的流程
+2. 工具集成 - 使用特定文件格式或 API 的指令
+3. 领域专长 - 公司特定的知识、模式、业务逻辑
+4. 捆绑资源 - 用于复杂和重复任务的脚本、参考资料和资产
 
-### Anatomy of a Skill
+### Anatomy of a Skill (Skill 的解剖结构)
 
-Every skill consists of a required SKILL.md file and optional bundled resources:
+每个 Skill 都由一个必需的 SKILL.md 文件和可选的捆绑资源组成：
 
 ```
 skill-name/
-├── SKILL.md (required)
-│   ├── YAML frontmatter metadata (required)
-│   │   ├── name: (required)
-│   │   └── description: (required)
-│   └── Markdown instructions (required)
-└── Bundled Resources (optional)
-    ├── scripts/          - Executable code (Python/Bash/etc.)
-    ├── references/       - Documentation intended to be loaded into context as needed
-    └── assets/           - Files used in output (templates, icons, fonts, etc.)
+├── SKILL.md (必需)
+│   ├── YAML frontmatter 元数据 (必需)
+│   │   ├── name: (必需)
+│   │   └── description: (必需)
+│   └── Markdown 指令 (必需)
+└── Bundled Resources (可选)
+    ├── scripts/          - 可执行代码 (Python/Bash 等)
+    ├── references/       - 旨在根据需要加载到上下文中的参考文档
+    └── assets/           - 在输出中使用的文件 (模板、图标、字体等)
 ```
 
-#### SKILL.md (required)
+#### SKILL.md (必需)
 
-**Metadata Quality:** The `name` and `description` in YAML frontmatter determine when Claude will use the skill. Be specific about what the skill does and when to use it. Use the third-person (e.g. "This skill should be used when..." instead of "Use this skill when...").
+**元数据质量：** YAML frontmatter 中的 `name` 和 `description` 决定了 Claude 何时使用该 Skill。请具体说明该 Skill 的功能及其使用时机。使用第三人称（例如“当……时应使用此 Skill”，而不是“当……时使用此 Skill”）。
 
-#### Bundled Resources (optional)
+#### 捆绑资源 (可选)
 
-##### Scripts (`scripts/`)
+##### 脚本 (`scripts/`)
 
-Executable code (Python/Bash/etc.) for tasks that require deterministic reliability or are repeatedly rewritten.
+用于需要确定性可靠性或重复编写的任务的可执行代码 (Python/Bash 等)。
 
-- **When to include**: When the same code is being rewritten repeatedly or deterministic reliability is needed
-- **Example**: `scripts/rotate_pdf.py` for PDF rotation tasks
-- **Benefits**: Token efficient, deterministic, may be executed without loading into context
-- **Note**: Scripts may still need to be read by Claude for patching or environment-specific adjustments
+- **何时包含**：当相同的代码被重复编写或需要确定性可靠性时
+- **示例**：用于 PDF 旋转任务的 `scripts/rotate_pdf.py`
+- **优点**：Token 效率高、确定性强、可以在不加载到上下文页面的情况下执行
+- **注意**：脚本可能仍需要被 Claude 读取以进行修补或针对特定环境的调整
 
-##### References (`references/`)
+##### 参考资料 (`references/`)
 
-Documentation and reference material intended to be loaded as needed into context to inform Claude's process and thinking.
+旨在根据需要加载到上下文中以告知 Claude 的过程和思路的文档和参考材料。
 
-- **When to include**: For documentation that Claude should reference while working
-- **Examples**: `references/finance.md` for financial schemas, `references/mnda.md` for company NDA template, `references/policies.md` for company policies, `references/api_docs.md` for API specifications
-- **Use cases**: Database schemas, API documentation, domain knowledge, company policies, detailed workflow guides
-- **Benefits**: Keeps SKILL.md lean, loaded only when Claude determines it's needed
-- **Best practice**: If files are large (>10k words), include grep search patterns in SKILL.md
-- **Avoid duplication**: Information should live in either SKILL.md or references files, not both. Prefer references files for detailed information unless it's truly core to the skill—this keeps SKILL.md lean while making information discoverable without hogging the context window. Keep only essential procedural instructions and workflow guidance in SKILL.md; move detailed reference material, schemas, and examples to references files.
+- **何时包含**：用于 Claude 在工作时应参考的文档
+- **示例**：用于财务模式的 `references/finance.md`、公司 NDA 模板的 `references/mnda.md`、公司政策的 `references/policies.md`、API 规范的 `references/api_docs.md`
+- **用例**：数据库模式、API 文档、领域知识、公司政策、详细的工作流指南
+- **优点**：保持 SKILL.md 精简，仅在 Claude 确定需要时才加载
+- **最佳实践**：如果文件较大（>10k 词），请在 SKILL.md 中包含 grep 搜索模式
+- **避免重复**：信息应存在于 SKILL.md 或参考文件中，而不是两者都有。推荐将详细信息放在参考文件中，除非它确实是 Skill 的核心——这可以保持 SKILL.md 精简，同时使信息可被发现，又不会占用过多的上下文窗口。仅在 SKILL.md 中保留必要的过程性指令和工作流指南；将详细的参考材料、模式和示例移至参考文件。
 
-##### Assets (`assets/`)
+##### 资产 (`assets/`)
 
-Files not intended to be loaded into context, but rather used within the output Claude produces.
+不打算加载到上下文中，而是供 Claude 生成的输出中使用的文件。
 
-- **When to include**: When the skill needs files that will be used in the final output
-- **Examples**: `assets/logo.png` for brand assets, `assets/slides.pptx` for PowerPoint templates, `assets/frontend-template/` for HTML/React boilerplate, `assets/font.ttf` for typography
-- **Use cases**: Templates, images, icons, boilerplate code, fonts, sample documents that get copied or modified
-- **Benefits**: Separates output resources from documentation, enables Claude to use files without loading them into context
+- **何时包含**：当 Skill 需要将在最终输出中使用的文件时
+- **示例**：品牌资产的 `assets/logo.png`、PowerPoint 模板的 `assets/slides.pptx`、HTML/React 样板的 `assets/frontend-template/`、排版用的 `assets/font.ttf`
+- **用例**：模板、图像、图标、样板代码、字体、被复制或修改的示例文档
+- **优点**：将输出资源与文档分离开来，使 Claude 能够使用文件而无需将其加载到上下文中
 
-### Progressive Disclosure Design Principle
+### Progressive Disclosure Design Principle (渐进式披露设计原则)
 
-Skills use a three-level loading system to manage context efficiently:
+Skill 使用三层加载系统来高效管理上下文：
 
-1. **Metadata (name + description)** - Always in context (~100 words)
-2. **SKILL.md body** - When skill triggers (<5k words)
-3. **Bundled resources** - As needed by Claude (Unlimited*)
+1. **元数据 (name + description)** - 始终在上下文中 (~100 词)
+2. **SKILL.md 正文** - 当 Skill 触发时 (<5k 词)
+3. **捆绑资源** - 根据 Claude 的需要加载 (无上限*)
 
-*Unlimited because scripts can be executed without reading into context window.
+*无上限是因为脚本可以在不读入上下文窗口的情况下执行。
 
-## Skill Creation Process
+## Skill Creation Process (Skill 创建流程)
 
-To create a skill, follow the "Skill Creation Process" in order, skipping steps only if there is a clear reason why they are not applicable.
+按照“Skill 创建流程”顺序执行操作，仅当有明确理由说明步骤不适用时才跳过。
 
-### Step 1: Understanding the Skill with Concrete Examples
+### 第 1 步：通过具体示例理解 Skill
 
-Skip this step only when the skill's usage patterns are already clearly understood. It remains valuable even when working with an existing skill.
+仅当已经清楚理解 Skill 的使用模式时才跳过此步骤。即使在处理现有 Skill 时，该步骤仍然极具价值。
 
-To create an effective skill, clearly understand concrete examples of how the skill will be used. This understanding can come from either direct user examples or generated examples that are validated with user feedback.
+要创建有效的 Skill，请清楚地了解 Skill 将如何使用的具体示例。这种理解可以来自用户的直接示例，也可以来自经过用户反馈验证的生成示例。
 
-For example, when building an image-editor skill, relevant questions include:
+例如，在构建图像编辑器 Skill 时，相关问题包括：
 
-- "What functionality should the image-editor skill support? Editing, rotating, anything else?"
-- "Can you give some examples of how this skill would be used?"
-- "I can imagine users asking for things like 'Remove the red-eye from this image' or 'Rotate this image'. Are there other ways you imagine this skill being used?"
-- "What would a user say that should trigger this skill?"
+- “图像编辑器 Skill 应支持哪些功能？编辑、旋转，还有别的吗？”
+- “您能举一些如何使用此 Skill 的例子吗？”
+- “我可以想象用户会提出‘去除这张图片的红眼’或‘旋转这张图片’之类的请求。您还想象过此 Skill 的其他使用方式吗？”
+- “用户会说什么来触发此 Skill？”
 
-To avoid overwhelming users, avoid asking too many questions in a single message. Start with the most important questions and follow up as needed for better effectiveness.
+为了避免用户感到困扰，请避免在单条消息中询问过多问题。从最重要的问题开始，并根据需要进行跟进以提高效率。
 
-Conclude this step when there is a clear sense of the functionality the skill should support.
+当清楚了解 Skill 应支持的功能后，结束此步骤。
 
-### Step 2: Planning the Reusable Skill Contents
+### 第 2 步：规划可重用的 Skill 内容
 
-To turn concrete examples into an effective skill, analyze each example by:
+要将具体示例转化为有效的 Skill，请通过以下方式分析每个示例：
 
-1. Considering how to execute on the example from scratch
-2. Identifying what scripts, references, and assets would be helpful when executing these workflows repeatedly
+1. 考虑如何从头开始执行该示例
+2. 识别在重复执行这些工作流时哪些脚本、参考资料和资产会有所帮助
 
-Example: When building a `pdf-editor` skill to handle queries like "Help me rotate this PDF," the analysis shows:
+示例：构建 `pdf-editor` Skill 来处理诸如“帮我旋转这个 PDF”之类的查询时，分析显示：
 
-1. Rotating a PDF requires re-writing the same code each time
-2. A `scripts/rotate_pdf.py` script would be helpful to store in the skill
+1. 旋转 PDF 每次都需要重写相同的代码
+2. 在 Skill 中存储 `scripts/rotate_pdf.py` 脚本会有所帮助
 
-Example: When designing a `frontend-webapp-builder` skill for queries like "Build me a todo app" or "Build me a dashboard to track my steps," the analysis shows:
+示例：为诸如“帮我构建一个待办事项应用”或“帮我构建一个仪表板来追踪我的步数”之类的查询设计 `frontend-webapp-builder` Skill 时，分析显示：
 
-1. Writing a frontend webapp requires the same boilerplate HTML/React each time
-2. An `assets/hello-world/` template containing the boilerplate HTML/React project files would be helpful to store in the skill
+1. 编写前端 Web 应用每次都需要相同的 HTML/React 样板
+2. 在 Skill 中存储包含样板 HTML/React 项目文件的 `assets/hello-world/` 模板会有所帮助
 
-Example: When building a `big-query` skill to handle queries like "How many users have logged in today?" the analysis shows:
+示例：构建 `big-query` Skill 来处理诸如“今天有多少用户登录？”之类的查询时，分析显示：
 
-1. Querying BigQuery requires re-discovering the table schemas and relationships each time
-2. A `references/schema.md` file documenting the table schemas would be helpful to store in the skill
+1. 查询 BigQuery 每次都需要重新探索表模式和关系
+2. 在 Skill 中存储记录表模式的 `references/schema.md` 文件会有所帮助
 
-**For Claude Code plugins:** When building a hooks skill, the analysis shows:
-1. Developers repeatedly need to validate hooks.json and test hook scripts
-2. `scripts/validate-hook-schema.sh` and `scripts/test-hook.sh` utilities would be helpful
-3. `references/patterns.md` for detailed hook patterns to avoid bloating SKILL.md
+**对于 Claude Code 插件：** 构建 hooks Skill 时，分析显示：
+1. 开发者反复需要验证 hooks.json 并测试 hook 脚本
+2. `scripts/validate-hook-schema.sh` and `scripts/test-hook.sh` 工具会有帮助
+3. `references/patterns.md` 用于详细的 hook 模式，以避免 SKILL.md 过于臃肿
 
-To establish the skill's contents, analyze each concrete example to create a list of the reusable resources to include: scripts, references, and assets.
+要建立 Skill 的内容，请分析每个具体示例以创建要包含的可重用资源列表：脚本、参考资料和资产。
 
-### Step 3: Create Skill Structure
+### 第 3 步：创建 Skill 结构
 
-For Claude Code plugins, create the skill directory structure:
+对于 Claude Code 插件，创建 Skill 目录结构：
 
 ```bash
 mkdir -p plugin-name/skills/skill-name/{references,examples,scripts}
 touch plugin-name/skills/skill-name/SKILL.md
 ```
 
-**Note:** Unlike the generic skill-creator which uses `init_skill.py`, plugin skills are created directly in the plugin's `skills/` directory with a simpler manual structure.
+**注意：** 与使用 `init_skill.py` 的通用 Skill 创建程序不同，插件 Skill 直接在插件的 `skills/` 目录中创建，采用更简单的手动结构。
 
-### Step 4: Edit the Skill
+### 第 4 步：编辑 Skill
 
-When editing the (newly-created or existing) skill, remember that the skill is being created for another instance of Claude to use. Focus on including information that would be beneficial and non-obvious to Claude. Consider what procedural knowledge, domain-specific details, or reusable assets would help another Claude instance execute these tasks more effectively.
+编辑（新生成的或现有的）Skill 时，请记住 Skill 是为另一个 Claude 实例使用的。专注于包含那些对 Claude 有益且不显见的信息。考虑哪些过程性知识、领域特定细节或可重用资产可以帮助另一个 Claude instance 更有效地执行这些任务。
 
-#### Start with Reusable Skill Contents
+#### 从可重用的 Skill 内容开始
 
-To begin implementation, start with the reusable resources identified above: `scripts/`, `references/`, and `assets/` files. Note that this step may require user input. For example, when implementing a `brand-guidelines` skill, the user may need to provide brand assets or templates to store in `assets/`, or documentation to store in `references/`.
+要开始实现，请从上面识别的可重用资源开始：`scripts/`、`references/` 和 `assets/` 文件。请注意，此步骤可能需要用户输入。例如，在实现 `brand-guidelines` Skill 时，用户可能需要提供要存储在 `assets/` 中的品牌资产或模板，或者要存储在 `references/` 中的文档。
 
-Also, delete any example files and directories not needed for the skill. Create only the directories you actually need (references/, examples/, scripts/).
+此外，删除该 Skill 不需要的所有示例文件和目录。仅创建您实际需要的目录（references/、examples/、scripts/）。
 
-#### Update SKILL.md
+#### 更新 SKILL.md
 
-**Writing Style:** Write the entire skill using **imperative/infinitive form** (verb-first instructions), not second person. Use objective, instructional language (e.g., "To accomplish X, do Y" rather than "You should do X" or "If you need to do X"). This maintains consistency and clarity for AI consumption.
+**写作风格：** 使用 **祈使句/不定式形式**（动词开头的指令）编写整个 Skill，而不是第二人称。使用客观的、教学式的语言（例如，“要完成 X，请执行 Y”，而不是“你应该执行 X”或“如果你需要执行 X”）。这有助于保持 AI 消费的一致性和清晰度。
 
-**Description (Frontmatter):** Use third-person format with specific trigger phrases:
+**描述 (Frontmatter)：** 使用第三人称格式并包含具体的触发短语：
 
 ```yaml
 ---
-name: Skill Name
-description: This skill should be used when the user asks to "specific phrase 1", "specific phrase 2", "specific phrase 3". Include exact phrases users would say that should trigger this skill. Be concrete and specific.
+name: Skill 名称
+description: 当用户要求“具体短语 1”、“具体短语 2”、“具体短语 3”时，应使用此 Skill。包含用户为触发此 Skill 会说出的确切短语。请保持具体且明确。
 version: 0.1.0
 ---
 ```
 
-**Good description examples:**
+**良好的描述示例：**
 ```yaml
-description: This skill should be used when the user asks to "create a hook", "add a PreToolUse hook", "validate tool use", "implement prompt-based hooks", or mentions hook events (PreToolUse, PostToolUse, Stop).
+description: 当用户要求“创建 hook”、“添加 PreToolUse hook”、“验证工具使用”、“实现基于提示词的 hook”或提到 hook 事件（PreToolUse、PostToolUse、Stop）时，应使用此 Skill。
 ```
 
-**Bad description examples:**
+**糟糕的描述示例：**
 ```yaml
-description: Use this skill when working with hooks.  # Wrong person, vague
-description: Load when user needs hook help.  # Not third person
-description: Provides hook guidance.  # No trigger phrases
+description: 在处理 hook 时使用此 Skill。 # 人称错误，含糊不清
+description: 当用户需要 hook 帮助时加载。 # 非第三人称
+description: 提供 hook 指导。 # 无触发短语
 ```
 
-To complete SKILL.md body, answer the following questions:
+要完成 SKILL.md 正文，请回答以下问题：
 
-1. What is the purpose of the skill, in a few sentences?
-2. When should the skill be used? (Include this in frontmatter description with specific triggers)
-3. In practice, how should Claude use the skill? All reusable skill contents developed above should be referenced so that Claude knows how to use them.
+1. 该 Skill 的目的是什么（用几句话说明）？
+2. 该 Skill 何时应被使用？（将其包含在 frontmatter 描述中，并带有具体的触发短语）
+3. 在实践中，Claude 应如何使用该 Skill？应引用上面开发的所有可重用 Skill 内容，以便 Claude 知道如何使用它们。
 
-**Keep SKILL.md lean:** Target 1,500-2,000 words for the body. Move detailed content to references/:
-- Detailed patterns → `references/patterns.md`
-- Advanced techniques → `references/advanced.md`
-- Migration guides → `references/migration.md`
-- API references → `references/api-reference.md`
+**保持 SKILL.md 精简：** 正文的目标字数为 1,500-2,000 字。将详细内容移至 references/：
+- 详细模式 → `references/patterns.md`
+- 高级技术 → `references/advanced.md`
+- 迁移指南 → `references/migration.md`
+- API 参考 → `references/api-reference.md`
 
-**Reference resources in SKILL.md:**
+**在 SKILL.md 中引用资源：**
 ```markdown
-## Additional Resources
+## 其他资源
 
-### Reference Files
+### 参考文件
 
-For detailed patterns and techniques, consult:
-- **`references/patterns.md`** - Common patterns
-- **`references/advanced.md`** - Advanced use cases
+有关详细模式和技术，请咨询：
+- **`references/patterns.md`** - 常用模式
+- **`references/advanced.md`** - 高级用例
 
-### Example Files
+### 示例文件
 
 Working examples in `examples/`:
-- **`example-script.sh`** - Working example
+- **`example-script.sh`** - 现成示例
 ```
 
-### Step 5: Validate and Test
+### 第 5 步：验证与测试
 
-**For plugin skills, validation is different from generic skills:**
+**对于插件 Skill，验证方式与通用 Skill 不同：**
 
-1. **Check structure**: Skill directory in `plugin-name/skills/skill-name/`
-2. **Validate SKILL.md**: Has frontmatter with name and description
-3. **Check trigger phrases**: Description includes specific user queries
-4. **Verify writing style**: Body uses imperative/infinitive form, not second person
-5. **Test progressive disclosure**: SKILL.md is lean (~1,500-2,000 words), detailed content in references/
-6. **Check references**: All referenced files exist
-7. **Validate examples**: Examples are complete and correct
-8. **Test scripts**: Scripts are executable and work correctly
+1. **检查结构**：Skill 目录位于 `plugin-name/skills/skill-name/`
+2. **验证 SKILL.md**：具有包含名称和描述的 frontmatter
+3. **检查触发短语**：描述包含具体的客户端查询
+4. **验证写作风格**：正文使用祈使句/不定式形式，而非第二人称
+5. **测试渐进式披露**：SKILL.md 保持精简 (~1,500-2,000 字)，详细内容位于 references/
+6. **检查引用**：所有引用的文件均存在
+7. **验证示例**：示例完整且正确
+8. **测试脚本**：脚本可执行且工作正常
 
-**Use the skill-reviewer agent:**
+**使用 Skill 审核代理 (skill-reviewer agent)：**
 ```
-Ask: "Review my skill and check if it follows best practices"
+询问：“Review my skill and check if it follows best practices”（审核我的 Skill 并检查它是否遵循最佳实践）
 ```
 
 The skill-reviewer agent will check description quality, content organization, and progressive disclosure.
 
-### Step 6: Iterate
+### 第 6 步：迭代
 
-After testing the skill, users may request improvements. Often this happens right after using the skill, with fresh context of how the skill performed.
+测试 Skill 后，用户可能会要求进行改进。通常这发生在刚使用完 Skill 之后，此时对 Skill 的表现有着明确的背景信息。
 
-**Iteration workflow:**
-1. Use the skill on real tasks
-2. Notice struggles or inefficiencies
-3. Identify how SKILL.md or bundled resources should be updated
-4. Implement changes and test again
+**迭代工作流：**
+1. 在实际任务中使用 Skill
+2. 观察困难点或效率低下的地方
+3. 确定应如何更新 SKILL.md 或捆绑资源
+4. 实施更改并再次测试
 
-**Common improvements:**
-- Strengthen trigger phrases in description
-- Move long sections from SKILL.md to references/
-- Add missing examples or scripts
-- Clarify ambiguous instructions
-- Add edge case handling
+**常见改进：**
+- 加强描述中的触发短语
+- 将长章节从 SKILL.md 移至 references/
+- 添加缺失的示例或脚本
+- 澄清含糊不清的指令
+- 添加边缘情况处理
 
-## Plugin-Specific Considerations
+## 插件特定的注意事项
 
-### Skill Location in Plugins
+### 插件中 Skill 的位置
 
-Plugin skills live in the plugin's `skills/` directory:
+插件 Skill 位于插件的 `skills/` 目录中：
 
 ```
 my-plugin/
@@ -266,290 +263,291 @@ my-plugin/
         └── scripts/
 ```
 
-### Auto-Discovery
+### 自动发现
 
-Claude Code automatically discovers skills:
-- Scans `skills/` directory
-- Finds subdirectories containing `SKILL.md`
-- Loads skill metadata (name + description) always
-- Loads SKILL.md body when skill triggers
-- Loads references/examples when needed
+Claude Code 会自动发现 Skill：
+- 扫描 `skills/` 目录
+- 查找包含 `SKILL.md` 的子目录
+- 始终加载 Skill 元数据 (name + description)
+- 当 Skill 触发时载入 SKILL.md 正文
+- 根据需要载入 references/examples
+276: - 根据需要载入 references/examples
 
-### No Packaging Needed
+### 无须打包
 
-Plugin skills are distributed as part of the plugin, not as separate ZIP files. Users get skills when they install the plugin.
+插件 Skill 作为插件的一部分分发，而不是作为单独的 ZIP 文件。用户在安装插件时即可获得 Skill。
 
-### Testing in Plugins
+### 插件中的测试
 
-Test skills by installing plugin locally:
+通过本地安装插件来测试 Skill：
 
 ```bash
-# Test with --plugin-dir
+# 使用 --plugin-dir 进行测试
 cc --plugin-dir /path/to/plugin
 
-# Ask questions that should trigger the skill
-# Verify skill loads correctly
+# 提出本该触发该 Skill 的问题
+# 验证 Skill 是否正确载入
 ```
 
-## Examples from Plugin-Dev
+## Plugin-Dev 中的示例
 
-Study the skills in this plugin as examples of best practices:
+研究该插件中的 Skill，作为最佳实践示例：
 
-**hook-development skill:**
-- Excellent trigger phrases: "create a hook", "add a PreToolUse hook", etc.
+**hook-development Skill：**
+- 优秀的触发短语：“create a hook”、“add a PreToolUse hook”等
 - Lean SKILL.md (1,651 words)
 - 3 references/ files for detailed content
 - 3 examples/ of working hooks
 - 3 scripts/ utilities
 
-**agent-development skill:**
-- Strong triggers: "create an agent", "agent frontmatter", etc.
+**agent-development Skill：**
+- 强力触发词：“create an agent”、“agent frontmatter”等
 - Focused SKILL.md (1,438 words)
-- References include the AI generation prompt from Claude Code
-- Complete agent examples
+- 参考资料包含来自 Claude Code 的 AI 生成提示词
+- 完整的 Agent 示例
 
-**plugin-settings skill:**
-- Specific triggers: "plugin settings", ".local.md files", "YAML frontmatter"
-- References show real implementations (multi-agent-swarm, ralph-wiggum)
+**plugin-settings Skill：**
+- 特定触发短语：“plugin settings”、“ .local.md 文件”、“YAML frontmatter”
+- 参考资料显示了实际实现 (multi-agent-swarm, ralph-wiggum)
 - Working parsing scripts
 
-Each demonstrates progressive disclosure and strong triggering.
+每个示例都展示了渐进式披露和强力的触发机制。
 
-## Progressive Disclosure in Practice
+## Progressive Disclosure in Practice (渐进式披露实践)
 
-### What Goes in SKILL.md
+### SKILL.md 中应包含的内容
 
-**Include (always loaded when skill triggers):**
-- Core concepts and overview
-- Essential procedures and workflows
-- Quick reference tables
-- Pointers to references/examples/scripts
-- Most common use cases
+**包含（当 Skill 触发时始终载入）：**
+- 核心概念和概览
+- 基本流程和工作流
+- 快速参考表
+- 指向 references/examples/scripts 的指针
+- 最常见的用例
 
-**Keep under 3,000 words, ideally 1,500-2,000 words**
+**保持在 3,000 字以内，理想情况下为 1,500-2,000 字**
 
-### What Goes in references/
+### references/ 中应包含的内容
 
-**Move to references/ (loaded as needed):**
-- Detailed patterns and advanced techniques
-- Comprehensive API documentation
-- Migration guides
-- Edge cases and troubleshooting
-- Extensive examples and walkthroughs
+**移至 references/（根据需要载入）：**
+- 详细模式和高级技术
+- 全面的 API 文档
+- 迁移指南
+- 边缘情况和故障排除
+- 扩展示例和演练
 
-**Each reference file can be large (2,000-5,000+ words)**
+**每个参考文件可以很大（2,000-5,000+ 字）**
 
-### What Goes in examples/
+### examples/ 中应包含的内容
 
-**Working code examples:**
-- Complete, runnable scripts
-- Configuration files
-- Template files
-- Real-world usage examples
+**可运行的代码示例：**
+- 完整的、可运行的脚本
+- 配置文件
+- 模板文件
+- 实际使用示例
 
-**Users can copy and adapt these directly**
+**用户可以直接复制并改编这些内容**
 
-### What Goes in scripts/
+### scripts/ 中应包含的内容
 
-**Utility scripts:**
-- Validation tools
-- Testing helpers
-- Parsing utilities
-- Automation scripts
+**工具脚本：**
+- 验证工具
+- 测试助手
+- 解析实用程序
+- 自动化脚本
 
-**Should be executable and documented**
+**应是可执行的并带有文档说明**
 
-## Writing Style Requirements
+## Writing Style Requirements (写作风格要求)
 
-### Imperative/Infinitive Form
+### 祈使句/不定式形式
 
-Write using verb-first instructions, not second person:
+使用动词开头的指令编写，而非第二人称：
 
-**Correct (imperative):**
+**正确 (祈使句)：**
 ```
-To create a hook, define the event type.
-Configure the MCP server with authentication.
-Validate settings before use.
-```
-
-**Incorrect (second person):**
-```
-You should create a hook by defining the event type.
-You need to configure the MCP server.
-You must validate settings before use.
+要创建 hook，请定义事件类型。
+使用身份验证配置 MCP 服务器。
+使用前验证设置。
 ```
 
-### Third-Person in Description
+**错误 (第二人称)：**
+```
+您应该通过定义事件类型来创建 hook。
+您需要配置 MCP 服务器。
+您必须在使用前验证设置。
+```
 
-The frontmatter description must use third person:
+### 描述中的第三人称
 
-**Correct:**
+frontmatter 描述必须使用第三人称：
+
+**正确：**
 ```yaml
-description: This skill should be used when the user asks to "create X", "configure Y"...
+description: 当用户要求“创建 X”、“配置 Y”时，应使用此 Skill……
 ```
 
-**Incorrect:**
+**错误：**
 ```yaml
-description: Use this skill when you want to create X...
-description: Load this skill when user asks...
+description: 当你想创建 X 时使用此 Skill……
+description: 当用户询问时载入此 Skill……
 ```
 
-### Objective, Instructional Language
+### Objective, Instructional Language (客观的、教学式的语言)
 
-Focus on what to do, not who should do it:
+关注做什么，而不是谁该做：
 
-**Correct:**
+**正确：**
 ```
-Parse the frontmatter using sed.
-Extract fields with grep.
-Validate values before use.
-```
-
-**Incorrect:**
-```
-You can parse the frontmatter...
-Claude should extract fields...
-The user might validate values...
+使用 sed 解析 frontmatter。
+使用 grep 提取字段。
+使用前验证值。
 ```
 
-## Validation Checklist
+**错误：**
+```
+你可以解析 frontmatter……
+Claude 应该提取字段……
+用户可能会验证值……
+```
 
-Before finalizing a skill:
+## Validation Checklist (验证自检清单)
 
-**Structure:**
-- [ ] SKILL.md file exists with valid YAML frontmatter
-- [ ] Frontmatter has `name` and `description` fields
-- [ ] Markdown body is present and substantial
-- [ ] Referenced files actually exist
+在完成 Skill 前：
 
-**Description Quality:**
-- [ ] Uses third person ("This skill should be used when...")
-- [ ] Includes specific trigger phrases users would say
-- [ ] Lists concrete scenarios ("create X", "configure Y")
-- [ ] Not vague or generic
+**结构：**
+- [ ] SKILL.md 文件存在且具有有效的 YAML frontmatter
+- [ ] frontmatter 具有 `name` 和 `description` 字段
+- [ ] Markdown 正文存在且内容充实
+- [ ] 引用的文件确实存在
 
-**Content Quality:**
-- [ ] SKILL.md body uses imperative/infinitive form
-- [ ] Body is focused and lean (1,500-2,000 words ideal, <5k max)
-- [ ] Detailed content moved to references/
-- [ ] Examples are complete and working
-- [ ] Scripts are executable and documented
+**描述质量：**
+- [ ] 使用第三人称（“当用户要求……时，应使用此 Skill”）
+- [ ] 包含用户可能提出的具体触发短语
+- [ ] 列出具体的场景（“创建 X”，“配置 Y”）
+- [ ] 不含糊或宽泛
 
-**Progressive Disclosure:**
-- [ ] Core concepts in SKILL.md
-- [ ] Detailed docs in references/
+**内容质量：**
+- [ ] SKILL.md 正文使用祈使句/不定式形式
+- [ ] 正文专注且精简（理想情况为 1,500-2,000 字，最大不超过 5,000 字）
+- [ ] 详细内容已移至 references/
+- [ ] 示例完整且工作正常
+- [ ] 脚本可执行且带有文档说明
+
+**渐进式披露：**
+- [ ] 核心概念位于 SKILL.md
+- [ ] 详细文档位于 references/
 - [ ] Working code in examples/
-- [ ] Utilities in scripts/
-- [ ] SKILL.md references these resources
+- [ ] 工具脚本位于 scripts/
+- [ ] SKILL.md 引用了这些资源
 
-**Testing:**
-- [ ] Skill triggers on expected user queries
-- [ ] Content is helpful for intended tasks
-- [ ] No duplicated information across files
-- [ ] References load when needed
+**测试：**
+- [ ] Skill 针对预期的用户查询被触发
+- [ ] 内容对预期任务有帮助
+- [ ] 文件之间没有重复信息
+- [ ] 参考资料根据需要加载
 
-## Common Mistakes to Avoid
+## Common Mistakes to Avoid (应避免的常见错误)
 
-### Mistake 1: Weak Trigger Description
+### 错误 1：触发描述过弱
 
-❌ **Bad:**
+❌ **不佳：**
 ```yaml
-description: Provides guidance for working with hooks.
+description: 提供 hook 处理指南。
 ```
 
-**Why bad:** Vague, no specific trigger phrases, not third person
+**原因：** 含糊不清，没有具体的触发短语，非第三人称
 
-✅ **Good:**
+✅ **良好：**
 ```yaml
-description: This skill should be used when the user asks to "create a hook", "add a PreToolUse hook", "validate tool use", or mentions hook events. Provides comprehensive hooks API guidance.
+description: 当用户要求“创建 hook”、“添加 PreToolUse hook”、“验证工具使用”或提到 hook 事件时，应使用此 Skill。提供全面的 hook API 指南。
 ```
 
-**Why good:** Third person, specific phrases, concrete scenarios
+**原因：** 第三人称，具体的短语，具体的场景
 
-### Mistake 2: Too Much in SKILL.md
+### 错误 2：SKILL.md 中内容过多
 
-❌ **Bad:**
+❌ **不佳：**
 ```
 skill-name/
 └── SKILL.md  (8,000 words - everything in one file)
 ```
 
-**Why bad:** Bloats context when skill loads, detailed content always loaded
+**原因：** 当 Skill 加载时会使上下文膨胀，详细内容始终被加载
 
-✅ **Good:**
+✅ **良好：**
 ```
 skill-name/
-├── SKILL.md  (1,800 words - core essentials)
+├── SKILL.md  (1,800 字 - 核心精要)
 └── references/
-    ├── patterns.md (2,500 words)
-    └── advanced.md (3,700 words)
+    ├── patterns.md (2,500 字)
+    └── advanced.md (3,700 字)
 ```
 
-**Why good:** Progressive disclosure, detailed content loaded only when needed
+**原因：** 渐进式披露，详细内容仅在需要时加载
 
-### Mistake 3: Second Person Writing
+### 错误 3：使用第二人称写作
 
-❌ **Bad:**
+❌ **不佳：**
 ```markdown
-You should start by reading the configuration file.
-You need to validate the input.
-You can use the grep tool to search.
+你应该首先阅读配置文件。
+你可以通过验证输入来开始。
+你可以使用 grep 工具进行搜索。
 ```
 
-**Why bad:** Second person, not imperative form
+**原因：** 第二人称，非祈使句形式
 
-✅ **Good:**
+✅ **良好：**
 ```markdown
-Start by reading the configuration file.
-Validate the input before processing.
-Use the grep tool to search for patterns.
+首先阅读配置文件。
+在处理前验证输入。
+使用 grep 工具搜索模式。
 ```
 
-**Why good:** Imperative form, direct instructions
+**原因：** 祈使句形式，直接的指令
 
-### Mistake 4: Missing Resource References
+### 错误 4：缺失资源引用
 
-❌ **Bad:**
-```markdown
-# SKILL.md
-
-[Core content]
-
-[No mention of references/ or examples/]
-```
-
-**Why bad:** Claude doesn't know references exist
-
-✅ **Good:**
+❌ **不佳：**
 ```markdown
 # SKILL.md
 
-[Core content]
+[核心内容]
 
-## Additional Resources
-
-### Reference Files
-- **`references/patterns.md`** - Detailed patterns
-- **`references/advanced.md`** - Advanced techniques
-
-### Examples
-- **`examples/script.sh`** - Working example
+[未提及 references/ 或 examples/]
 ```
 
-**Why good:** Claude knows where to find additional information
+**原因：** Claude 并不知道参考资料的存在
 
-## Quick Reference
+✅ **良好：**
+```markdown
+# SKILL.md
 
-### Minimal Skill
+[核心内容]
+
+## 其他资源
+
+### 参考文件
+- **`references/patterns.md`** - 详细模式
+- **`references/advanced.md`** - 高级技术
+
+### 示例
+- **`examples/script.sh`** - 现成示例
+```
+
+**原因：** Claude 知道从哪里寻找更多信息
+
+## Quick Reference (快速参考)
+
+### Minimal Skill (最简 Skill)
 
 ```
 skill-name/
 └── SKILL.md
 ```
 
-Good for: Simple knowledge, no complex resources needed
+适用于：简单的知识，不需要复杂的资源
 
-### Standard Skill (Recommended)
+### Standard Skill (Recommended) (标准 Skill (推荐))
 
 ```
 skill-name/
@@ -560,9 +558,9 @@ skill-name/
     └── working-example.sh
 ```
 
-Good for: Most plugin skills with detailed documentation
+适用于：大多数具有详细文档的插件 Skill
 
-### Complete Skill
+### Complete Skill (完整 Skill)
 
 ```
 skill-name/
@@ -577,61 +575,61 @@ skill-name/
     └── validate.sh
 ```
 
-Good for: Complex domains with validation utilities
+适用于：具有验证工具的复杂领域
 
-## Best Practices Summary
+## Best Practices Summary (最佳实践总结)
 
-✅ **DO:**
-- Use third-person in description ("This skill should be used when...")
-- Include specific trigger phrases ("create X", "configure Y")
-- Keep SKILL.md lean (1,500-2,000 words)
-- Use progressive disclosure (move details to references/)
-- Write in imperative/infinitive form
-- Reference supporting files clearly
-- Provide working examples
-- Create utility scripts for common operations
-- Study plugin-dev's skills as templates
+✅ **推荐行为：**
+- 在描述中使用第三人称（“当用户要求……时，应使用此 Skill”）
+- 包含具体的触发短语（“创建 X”，“配置 Y”）
+- 保持 SKILL.md 精简 (1,500-2,000 字)
+- 使用渐进式披露（将细节移至 references/）
+- 使用祈使句/不定式形式编写
+- 清晰地引用支持文件
+- 提供现成的示例
+- 为常见操作创建工具脚本
+- 研究 plugin-dev 的 Skill 作为模板
 
-❌ **DON'T:**
-- Use second person anywhere
-- Have vague trigger conditions
-- Put everything in SKILL.md (>3,000 words without references/)
-- Write in second person ("You should...")
-- Leave resources unreferenced
-- Include broken or incomplete examples
-- Skip validation
+❌ **杜绝行为：**
+- 在任何地方使用第二人称
+- 触发条件含糊不清
+- 将所有内容都放在 SKILL.md 中（>3,000 字且无参考资料/）
+- 使用第二人称（“你应该……”）编写
+- 让资源处于未引用状态
+- 包含损坏或不完整的示例
+- 跳过验证
 
-## Additional Resources
+## 其他资源
 
-### Study These Skills
+### 学习这些 Skill
 
-Plugin-dev's skills demonstrate best practices:
-- `../hook-development/` - Progressive disclosure, utilities
-- `../agent-development/` - AI-assisted creation, references
-- `../mcp-integration/` - Comprehensive references
-- `../plugin-settings/` - Real-world examples
-- `../command-development/` - Clear critical concepts
-- `../plugin-structure/` - Good organization
+Plugin-dev 的 Skill 展示了最佳实践：
+- `../hook-development/` - 渐进式披露，实用程序
+- `../agent-development/` - AI 辅助创建，参考资料
+- `../mcp-integration/` - 全面的参考资料
+- `../plugin-settings/` - 实际示例
+- `../command-development/` - 清楚的关键概念
+- `../plugin-structure/` - 良好的组织结构
 
-### Reference Files
+### 参考文件
 
-For complete skill-creator methodology:
-- **`references/skill-creator-original.md`** - Full original skill-creator content
+有关完整的 Skill 创建方法：
+- **`references/skill-creator-original.md`** - 完整的 Skill Creator 原始内容
 
-## Implementation Workflow
+## Implementation Workflow (实现工作流)
 
-To create a skill for your plugin:
+为您的插件创建 Skill 的步骤：
 
-1. **Understand use cases**: Identify concrete examples of skill usage
-2. **Plan resources**: Determine what scripts/references/examples needed
-3. **Create structure**: `mkdir -p skills/skill-name/{references,examples,scripts}`
-4. **Write SKILL.md**:
-   - Frontmatter with third-person description and trigger phrases
-   - Lean body (1,500-2,000 words) in imperative form
-   - Reference supporting files
-5. **Add resources**: Create references/, examples/, scripts/ as needed
-6. **Validate**: Check description, writing style, organization
-7. **Test**: Verify skill loads on expected triggers
-8. **Iterate**: Improve based on usage
+1. **理解用例**：识别 Skill 使用的具体示例
+2. **规划资源**：确定需要的脚本/参考资料/示例
+3. **创建结构**：`mkdir -p skills/skill-name/{references,examples,scripts}`
+4. **写入 SKILL.md**：
+   - 使用第三人称描述和触发短语的 frontmatter
+   - 祈使句形式的精简内容 (1,500-2,000 字)
+   - 引用支持文件
+5. **添加资源**：根据需要创建 references/、examples/、scripts/
+6. **验证**：检查描述、写作风格、组织方式
+7. **测试**：验证 Skill 针对预期的触发条件是否载入
+8. **迭代**：根据使用情况进行改进
 
-Focus on strong trigger descriptions, progressive disclosure, and imperative writing style for effective skills that load when needed and provide targeted guidance.
+专注于强力的触发说明、渐进式披露和祈使句写作风格，以创建能在需要时加载并提供针对性指导的有效 Skill。

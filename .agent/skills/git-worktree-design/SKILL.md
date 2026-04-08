@@ -1,236 +1,235 @@
 ---
 name: Git Worktree Design
-description: 當使用者的需求是新增多個功能，或判斷使用者的需求適合拆分成多個 feature branch 並行開發時，或是提到 "worktree"、"git worktree"、"多分支開發"、"parallel branches"，自動觸發此 Skill。先分析需求並建議 worktree 拆分方案，經使用者確認後執行建立。
+description: 当用户的需求是新增多个功能，或判断用户的需求适合拆分为多个 feature branch 并行开发时，或是提到 "worktree"、"git worktree"、"多分支开发"、"parallel branches"，自动触发此 Skill。先分析需求并建议 worktree 拆分方案，经用户确认后执行创建。
 ---
 
-# Git Worktree Design — 智慧拆分平行開發
+# Git Worktree Design — 智能拆分并行开发
 
-分析使用者需求，判斷是否適合以 `git worktree` 拆分成多個 feature branch 平行開發，提供建議方案並執行。
+分析用户需求，判断是否适合以 `git worktree` 拆分为多个 feature branch 并行开发，提供建议方案并执行。
 
 ---
 
 ## 流程
 
-### 1. 分析當前狀態
+### 1. 分析当前状态
 
-執行以下指令了解 repo 狀態：
+执行以下命令了解 repo 状态：
 
 ```bash
-# 確認當前分支
+# 确认当前分支
 git branch --show-current
 
-# 列出既有 worktree
+# 列出已有 worktree
 git worktree list
 
-# 取得 remote 資訊
+# 获取 remote 信息
 git remote -v
 
-# 確認工作目錄狀態
+# 确认工作目录状态
 git status --short
 ```
 
-若有未提交的變更，提醒使用者先處理（commit 或 stash）再繼續。
+若有未提交的变更，提醒用户先处理（commit 或 stash）再继续。
 
 ---
 
-### 2. 全局設計（拆分方案 + Feature Spec）
+### 2. 全局设计（拆分方案 + Feature Spec）
 
-在建立任何 worktree 之前，先從全局視角完成所有 feature 的設計。這一步同時產出 **拆分方案** 和每個 feature 的 **Spec 草案**，讓使用者一次 review 整體規劃。
+在创建任何 worktree 之前，先从全局视角完成所有 feature 的设计。这一步同时产出 **拆分方案** 和每个 feature 的 **Spec 草案**，让用户一次性 review 整体规划。
 
 #### 2a. 需求拆分
 
-根據使用者需求，分析並拆分成多個獨立的 feature branch。
+根据用户需求，分析并拆分为多个独立的 feature branch。
 
-**拆分原則：**
+**拆分原则：**
 
-| 原則 | 說明 |
+| 原则 | 说明 |
 |------|------|
-| **功能獨立性** | 每個 worktree 負責一個獨立功能，減少跨分支衝突 |
-| **最小相依** | 盡量避免分支間互相依賴，可獨立開發與測試 |
-| **合理粒度** | 不宜太細（增加管理負擔），不宜太粗（失去平行開發優勢） |
-| **命名語意** | 分支名清楚描述功能，格式 `feature/<功能名>` |
+| **功能独立性** | 每个 worktree 负责一个独立功能，减少跨分支冲突 |
+| **最小依赖** | 尽量避免分支间互相依赖，可独立开发与测试 |
+| **合理粒度** | 不宜太细（增加管理负担），不宜太粗（失去并行开发优势） |
+| **命名语义** | 分支名清楚描述功能，格式 `feature/<功能名>` |
 
-#### 2b. 設計各 Feature Spec
+#### 2b. 设计各 Feature Spec
 
-針對每個拆分出來的 feature，根據使用者的原始需求和專案現況，**自動推導**出完整的 Spec 內容（不是丟空白範本）。
+针对每个拆分出来的 feature，根据用户的原始需求和项目现况，**自动推导**出完整的 Spec 内容（而不是给出空白模板）。
 
-**每份 Spec 應包含：**
+**每份 Spec 应包含：**
 
-| 區塊 | 說明 |
+| 块 | 说明 |
 |------|------|
-| **目標** | 這個 feature branch 要達成什麼 |
-| **實作範圍** | 具體的任務 checklist，粒度到 AI 看了就能直接動手 |
-| **驗收標準** | 可測試的行為或 UI 狀態描述 |
-| **技術約束** | 專案慣例、不可引入的依賴、需相容的介面等 |
-| **跨分支備註** | 與其他 feature 的相依關係、建議合併順序等 |
+| **目标** | 这个 feature branch 要达成什么 |
+| **实现范围** | 具体的任务 checklist，粒度到 AI 看了就能直接动手 |
+| **验收标准** | 可测试的行为或 UI 状态描述 |
+| **技术约束** | 项目惯例、不可引入的依赖、需兼容的接口等 |
+| **跨分支备注** | 与其他 feature 的依赖关系、建议合并顺序等 |
 
-> **重點**：在全局設計階段就考慮跨分支相依，例如 feature A 產出的共用元件是否影響 feature B，合併順序是否有先後。
+> **重点**：在全局设计阶段就考虑跨分支依赖，例如 feature A 产出的共用组件是否影响 feature B，合并顺序是否有先后。
 
-#### 2c. 呈現完整方案給使用者
+#### 2c. 呈现完整方案给用户
 
-以表格 + 各 feature spec 摘要的形式向使用者呈現**完整方案**：
+以表格 + 各 feature spec 摘要的形式向用户呈现**完整方案**：
 
 ```
-📋 Worktree 拆分方案（共 N 個分支）
+📋 Worktree 拆分方案（共 N 个分支）
 
-| # | 分支名稱 | Worktree 目錄 | 負責功能 |
+| # | 分支名称 | Worktree 目录 | 负责功能 |
 |---|----------|---------------|----------|
-| 1 | feature/hero-redesign | ../project-hero | Hero 區塊重新設計 |
-| 2 | feature/pricing-page | ../project-pricing | 定價頁面 |
-| 3 | feature/testimonials | ../project-testimonials | 用戶見證區塊 |
+| 1 | feature/hero-redesign | ../project-hero | Hero 区域重新设计 |
+| 2 | feature/pricing-page | ../project-pricing | 定价页面 |
+| 3 | feature/testimonials | ../project-testimonials | 用户见证区域 |
 
 ---
 
 📝 Feature Spec 摘要：
 
 ### 1. feature/hero-redesign
-- 目標：重新設計 Hero 區塊，加入動態背景與 CTA
-- 驗收：首屏載入 < 2s，CTA 按鈕可點擊跳轉
-- 相依：無，可獨立開發
+- 目标：重新设计 Hero 区域，加入动态背景与 CTA
+- 验收：首屏加载 < 2s，CTA 按钮可点击跳转
+- 依赖：无，可独立开发
 
 ### 2. feature/pricing-page
-- 目標：新增月/年切換的定價頁面
-- 驗收：切換月/年時價格正確更新，手機版排版正常
-- 相依：無，可獨立開發
+- 目标：新增月/年切换的定价页面
+- 验收：切换月/年时价格正确更新，手机版布局正常
+- 依赖：无，可独立开发
 
 ### 3. feature/testimonials
-- 目標：新增用戶見證輪播區塊
-- 驗收：輪播自動播放，手動切換無 bug
-- 相依：無，可獨立開發
+- 目标：新增用户见证轮播区域
+- 验收：轮播自动播放，手动切换无 bug
+- 依赖：无，可独立开发
 
 ---
 
-建議合併順序：1 → 2 → 3（無強制相依，可任意順序）
+建议合并顺序：1 → 2 → 3（无强制依赖，可任意顺序）
 
-確認執行？(Y/n)
+确认执行？(Y/n)
 ```
 
-使用 `notify_user` 工具向使用者展示完整方案（拆分 + Spec 摘要）並等待確認。
+使用 `notify_user` 工具向用户展示完整方案（拆分 + Spec 摘要）并等待确认。
 
 ---
 
-### 3. 建立 Worktree
+### 3. 创建 Worktree
 
-使用者確認後，依序執行：
+用户确认后，依次执行：
 
 ```bash
-# 建立各 worktree（新分支）
+# 创建各 worktree（新分支）
 git worktree add -b <branch_name> <worktree_path>
 ```
 
-#### Worktree 目錄命名規則
+#### Worktree 目录命名规则
 
-- 目錄放在當前 repo 的**同層級**（`../`）
+- 目录放在当前 repo 的**同级目录**（`../`）
 - 格式：`../<project-name>-<feature-short-name>`
-- 取 repo 目錄名作為 `<project-name>` 前綴，避免與其他專案混淆
+- 取 repo 目录名作为 `<project-name>` 前缀，避免与其他项目混淆
 
 ---
 
-### 4. 安裝依賴
+### 4. 安装依赖
 
-偵測專案使用的套件管理器並安裝依賴：
+检测项目使用的包管理器并安装依赖：
 
 ```bash
-# 偵測 lock file 判斷套件管理器
+# 检测 lock file 判断包管理器
 # pnpm-lock.yaml → pnpm install
 # yarn.lock → yarn install
 # package-lock.json → npm install
 # bun.lockb → bun install
 ```
 
-對每個 worktree 執行：
+对每个 worktree 执行：
 
 ```bash
 cd <worktree_path> && <package_manager> install
 ```
 
-> **注意**：每個 worktree 有獨立的工作目錄，`node_modules` 不會共享，必須各自安裝。
+> **注意**：每个 worktree 有独立的工作目录，`node_modules` 不会共享，必须各自安装。
 
 ---
 
-### 5. 寫入 Feature Spec 檔案
+### 5. 写入 Feature Spec 文件
 
-將步驟 2 設計好的 Spec 內容，使用 `write_to_file` 工具寫入到每個 worktree 的根目錄 `<worktree_path>/git-worktree-spec.md`。
+将步骤 2 设计好的 Spec 内容，使用 `write_to_file` 工具写入到每个 worktree 的根目录 `<worktree_path>/git-worktree-spec.md`。
 
-#### Spec 檔案格式
+#### Spec 文件格式
 
 ```markdown
-# Feature Spec: <功能名稱>
+# Feature Spec: <功能名称>
 
-> 此文件由 Git Worktree Design Skill 自動產生，供 AI Agent 作為開發指引。
+> 此文件由 Git Worktree Design Skill 自动生成，供 AI Agent 作为开发指引。
 
-## 分支資訊
+## 分支信息
 
-| 項目 | 值 |
+| 项目 | 值 |
 |------|-----|
-| 分支名稱 | `feature/<name>` |
-| 基於分支 | `<base_branch>` |
-| Worktree 路徑 | `<absolute_path>` |
-| 建立時間 | `<timestamp>` |
+| 分支名称 | `feature/<name>` |
+| 基于分支 | `<base_branch>` |
+| Worktree 路径 | `<absolute_path>` |
+| 创建时间 | `<timestamp>` |
 
-## 目標
+## 目标
 
-（從步驟 2 的設計內容填入）
+（从步骤 2 的设计内容填入）
 
-## 實作範圍
+## 实现范围
 
-- [ ] 具體任務 1
-- [ ] 具體任務 2
-- [ ] 具體任務 3
+- [ ] 具体任务 1
+- [ ] 具体任务 2
+- [ ] 具体任务 3
 
-## 驗收標準
+## 验收标准
 
-- 條件 A 成立時，應有行為 X
-- 條件 B 成立時，應有行為 Y
+- 条件 A 成立时，应有行为 X
+- 条件 B 成立时，应有行为 Y
 
-## 技術約束
+## 技术约束
 
-- 不得引入新的 npm 依賴（視情況填寫）
-- 需相容既有的設計系統 / API 介面
-## 跨分支備註
+- 不得引入新的 npm 依赖（视情况填写）
+- 需兼容已有的设计系统 / API 接口
+## 跨分支备注
 
-與其他 worktree 分支的相依關係、合併順序建議等。
+与其他 worktree 分支的依赖关系、合并顺序建议等。
 ```
 
 ---
 
-### 6. 確認結果
+### 6. 确认结果
 
-所有 worktree 建立完成後，執行：
+所有 worktree 创建完成后，执行：
 
 ```bash
 git worktree list
 ```
 
-以表格形式展示結果：
+以表格形式展示结果：
 
 ```
-✅ Worktree 建立完成！
+✅ Worktree 创建完成！
 
-| Worktree 目錄 | 分支 | 狀態 | Spec |
+| Worktree 目录 | 分支 | 状态 | Spec |
 |---------------|------|------|------|
-| /path/to/project-hero | feature/hero-redesign | ✅ 就緒 | ✅ 已寫入 |
-| /path/to/project-pricing | feature/pricing-page | ✅ 就緒 | ✅ 已寫入 |
-| /path/to/project-testimonials | feature/testimonials | ✅ 就緒 | ✅ 已寫入 |
+| /path/to/project-hero | feature/hero-redesign | ✅ 就绪 | ✅ 已写入 |
+| /path/to/project-pricing | feature/pricing-page | ✅ 就绪 | ✅ 已写入 |
+| /path/to/project-testimonials | feature/testimonials | ✅ 就绪 | ✅ 已写入 |
 
 💡 提示：
-- 切換工作目錄到對應 worktree 即可開始開發
-- 所有 worktree 共享同一個 .git，commit 歷史互通
+- 切换工作目录到对应 worktree 即可开始开发
+- 所有 worktree 共享同一个 .git，commit 历史互通
 ```
 
 ---
 
-## 邊界情況處理
+## 边界情况处理
 
-- **分支已存在**：偵測到分支已存在時，改用不帶 `-b` 的指令（`git worktree add <path> <existing-branch>`），並提示使用者確認
-- **目錄已存在**：提示衝突並建議替代目錄名
-- **有未提交變更**：提醒先 commit 或 stash
-- **遠端分支同步**：建議先 `git fetch` 取得最新遠端狀態
-- **Worktree 清理**：提醒使用者開發完成後用 `git worktree remove` 和 `git branch -d` 清理
-
+- **分支已存在**：检测到分支已存在时，改用不带 `-b` 的命令（`git worktree add <path> <existing-branch>`），并提示用户确认
+- **目录已存在**：提示冲突并建议替代目录名
+- **有未提交变更**：提醒先 commit 或 stash
+- **远端分支同步**：建议先 `git fetch` 获取最新远端状态
+- **Worktree 清理**：提醒用户开发完成后使用 `git worktree remove` 和 `git branch -d` 清理
 ---
 
-## 常用維護指令
+## 常用维护命令
 
 ```bash
 # 列出所有 worktree
@@ -239,12 +238,12 @@ git worktree list
 # 移除 worktree（保留分支）
 git worktree remove <path>
 
-# 強制移除（有未提交變更時）
+# 强制移除（有未提交变更时）
 git worktree remove --force <path>
 
-# 清理失效的 worktree 參照
+# 清理失效的 worktree 引用
 git worktree prune
 
-# 刪除分支（合併後）
+# 删除分支（合并后）
 git branch -d <branch_name>
 ```
