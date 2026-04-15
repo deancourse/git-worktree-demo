@@ -25,6 +25,3 @@ npm-debug.log*
 
 # Vite
 *.local
-
-# Agent reference spec
-git-worktree-spec.md
