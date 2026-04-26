@@ -1,444 +1,253 @@
 # Git Worktree 团队协作指南
 
-## 🎯 核心价值
+## 目标
 
-Git Worktree 让你**同时在多个分支工作，无需频繁切换**，极大提升团队开发效率。特别适合 Vibe Coding（流畅编码体验）的开发模式。
+Git Worktree 让团队可以在同一个仓库中并行处理多个分支，减少频繁切分支、stash/pop、重新编译带来的成本。
 
----
+适用场景：
 
-## 📚 什么是 Git Worktree？
-
-Git Worktree 是 Git 的一个强大功能，允许你在同一个仓库中维护**多个独立的工作目录**，每个目录可以关联到不同的分支。
-
-### 关键对比
-
-| 方面 | 传统切换分支 | Git Worktree |
-|------|----------|------------|
-| 切换分支耗时 | 重新加载所有文件 | 立即切换目录 |
-| 同时修改多分支 | ❌ 需要stash/切换 | ✅ 并行开发 |
-| 编译缓存 | 丢失（重编） | 保留（不同目录） |
-| IDE 配置 | 共享（易冲突） | 独立（互不影响） |
+- 功能开发与紧急修复并行
+- Code Review 与本地开发并行
+- 多任务切换频繁的日常研发
 
 ---
 
-## 🚀 快速开始
+## 什么是 Git Worktree
 
-### 基础命令
+Git Worktree 允许一个仓库在多个目录中同时检出不同分支。所有工作树共享同一份 Git 对象库，但每个工作树有自己的工作目录内容。
 
-#### 1. 创建新工作树
-```bash
-# 基于当前分支创建工作树
-git worktree add ../worktree-branch-name
+对比传统切分支：
 
-# 基于特定分支创建工作树
-git worktree add ../worktree-feature /path/to/branch-name
-
-# 创建并同时创建新分支
-git worktree add -b feature-new ../worktree-feature
-```
-
-#### 2. 列出所有工作树
-```bash
-git worktree list
-git worktree list --verbose  # 显示详细信息
-```
-
-#### 3. 删除工作树
-```bash
-# 强制删除工作树
-git worktree remove ../worktree-feature
-
-# 或者先手动删除目录，再清理
-rm -rf ../worktree-feature
-git worktree prune
-```
-
-#### 4. 修复损坏的工作树
-```bash
-git worktree lock ../worktree-feature --reason "备份中"
-git worktree unlock ../worktree-feature
-```
+| 方面 | 传统切分支 | Git Worktree |
+|---|---|---|
+| 多任务并行 | 需要频繁切换 | 可多目录并行 |
+| stash 依赖 | 常见 | 大幅减少 |
+| IDE/终端会话 | 经常被打断 | 可长期保留 |
+| 心智负担 | 高 | 低 |
 
 ---
 
-## 💼 团队实战场景
+## 核心命令速查
 
-### 场景 1: 并行开发多个功能分支
-
-```bash
-# 主工作树：处理 main 分支
-cd ~/project
-
-# 创建第一个功能分支工作树
-git worktree add ../wt-feature-login -b feature/login
-
-# 创建第二个功能分支工作树  
-git worktree add ../wt-feature-payment -b feature/payment
-
-# 创建测试修复工作树
-git worktree add ../wt-bugfix-auth -b bugfix/auth-issue
-
-# 现在可以并行开发，互不干扰
-```
-
-**文件结构：**
-```
-project/
-  ├── .git/                    # 共享 git 仓库
-  ├── src/
-  ├── package.json
-  └── (主工作树内容)
-
-wt-feature-login/
-  ├── src/
-  ├── package.json
-  └── (feature/login 分支内容)
-
-wt-feature-payment/
-  ├── src/
-  ├── package.json
-  └── (feature/payment 分支内容)
-```
-
-### 场景 2: 紧急修复 + 功能开发
+### 1) 创建工作树
 
 ```bash
-# 正在开发 feature/user-dashboard 分支
-# 突然需要修复线上 bug
+# 在当前 HEAD 基础上创建工作树（分支与当前一致）
+git worktree add ../wt-task-a
 
-# ✅ 创建新工作树修复 bug（基于 main）
-git worktree add ../wt-hotfix -b hotfix/critical-bug
-
-# 修复完成后直接提交、测试、部署
-# 原工作树继续开发，无需 stash/pop
-```
-
-### 场景 3: Code Review + 功能开发
-
-```bash
-# 需要检视同事的 PR（feature/checkout）
+# 基于已有分支创建工作树
 git worktree add ../wt-review feature/checkout
 
-# 一边测试同事代码，一边开发自己的功能
-# 完成后直接删除 review 工作树
-git worktree remove ../wt-review
+# 创建新分支并创建工作树（推荐团队开发常用）
+git worktree add -b feature/123-login ../wt-feature-123 main
 ```
 
----
+命令格式说明：
 
-## 🎨 最佳实践（Vibe Coding 友好）
+```text
+git worktree add [-b <new-branch>] <path> [<start-point>]
+```
 
-### ✅ DO（推荐做法）
+### 2) 查看工作树
 
 ```bash
-# 1. 统一的命名规范
-git worktree add ../wt-feature-<issue-id>-<short-desc>
-git worktree add ../wt-feature-123-user-auth
-git worktree add ../wt-bugfix-456-login-crash
-
-# 2. 创建包含所有 worktree 的快捷脚本 (创建 .worktree-setup.sh)
-#!/bin/bash
-# 快速创建常用工作树
-git worktree add -b develop ../wt-develop develop
-git worktree add -b staging ../wt-staging staging
-git worktree add -b feature-1 ../wt-feature-1 feature-1
-
-# 3. 在 VS Code 中使用工作区功能
-# File > Add Folder to Workspace
-# 添加 wt-feature-xxx 目录，同时编辑多个分支
-
-# 4. 定期清理已删除的分支
-git worktree prune
-
-# 5. 在 IDE 中配置不同工作树的执行配置
-# 避免冲突（不同端口、不同调试器等）
-```
-
-### ❌ DON'T（避免做法）
-
-```bash
-# ❌ 1. 不要在多个工作树中操作同一分支
-git worktree add ../wt1 feature/auth
-git worktree add ../wt2 feature/auth  # ❌ 冲突！
-
-# ❌ 2. 不要忘记删除不用的工作树
-# 占用磁盘空间，容易混淆
-
-# ❌ 3. 不要跨工作树共享 node_modules、build 目录
-# 创建 .gitignore 防止提交
-echo "node_modules/" >> ../.gitignore
-echo "dist/" >> ../.gitignore
-echo ".next/" >> ../.gitignore
-
-# ❌ 4. 不要在工作树中改变 git 配置
-# 所有工作树共享 .git/config
-```
-
----
-
-## 🛠️ 团队配置建议
-
-### 1. 项目根目录结构规划
-
-```
-project-repo/
-├── .git/
-├── .gitignore          # 包含: node_modules, dist, .env 等
-├── .worktree-setup.sh  # 工作树设置脚本
-├── src/
-└── README.md
-
-# 创建工作树目录（与仓库目录同级）
-../wt-main/
-../wt-develop/
-../wt-feature-xxx/
-```
-
-### 2. 团队规范文档
-
-```markdown
-## 工作树命名规范
-- 功能分支: wt-feature-{JIRA_ID}-{简短描述}
-- 修复分支: wt-bugfix-{JIRA_ID}-{简短描述}  
-- 发布分支: wt-release-{版本号}
-- 临时分支: wt-temp-{用途}-{创建日期}
-
-## 生命周期
-1. 创建: git worktree add
-2. 开发: 在工作树中正常开发
-3. 提交: git commit, git push
-4. 删除: git worktree remove
-```
-
-### 3. VS Code 工作区配置 (vscode-workspace)
-
-```json
-{
-  "folders": [
-    {
-      "path": "../wt-main",
-      "name": "🔵 Main Branch"
-    },
-    {
-      "path": "../wt-develop",
-      "name": "🟢 Develop Branch"
-    },
-    {
-      "path": "../wt-feature-123",
-      "name": "🟡 Feature Auth"
-    }
-  ],
-  "settings": {
-    "files.exclude": {
-      "node_modules": true,
-      "dist": true,
-      ".next": true
-    }
-  }
-}
-```
-
----
-
-## ⚡ 高级技巧
-
-### 1. 自动化工作树管理脚本
-
-```bash
-#!/bin/bash
-# worktree-manager.sh
-
-case "$1" in
-  create)
-    TYPE=$2
-    ISSUE_ID=$3
-    DESC=$4
-    git worktree add -b "$TYPE/$ISSUE_ID-$DESC" "../wt-$TYPE-$ISSUE_ID" 
-    echo "✅ 创建工作树: ../wt-$TYPE-$ISSUE_ID"
-    ;;
-  list)
-    git worktree list --porcelain
-    ;;
-  clean)
-    git worktree prune
-    echo "✅ 清理完成"
-    ;;
-  *)
-    echo "用法: $0 {create|list|clean}"
-    ;;
-esac
-
-# 使用方式
-# ./worktree-manager.sh create feature 123 user-auth
-# ./worktree-manager.sh list
-# ./worktree-manager.sh clean
-```
-
-### 2. Git 别名快捷方式
-
-```bash
-# 在 ~/.gitconfig 中添加
-[alias]
-    wtadd = worktree add
-    wtlist = worktree list --porcelain
-    wtremove = worktree remove
-    wtprune = worktree prune
-    wtlock = worktree lock
-    wtunlock = worktree unlock
-
-# 使用
-git wtadd ../wt-feature-1 -b feature/auth
-git wtlist
-```
-
-### 3. 与 CI/CD 集成
-
-```yaml
-# GitHub Actions 示例
-name: Multi-Branch Testing
-
-on: [push, pull_request]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        branch: [main, develop, staging]
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ matrix.branch }}
-      - name: Run tests
-        run: |
-          npm install
-          npm test
-```
-
----
-
-## 🐛 常见问题解决
-
-### Q1: 工作树被锁定，无法删除
-```bash
-git worktree unlock /path/to/worktree
-git worktree remove /path/to/worktree
-```
-
-### Q2: 磁盘空间浪费，如何节省
-```bash
-# 使用共享的 node_modules（不推荐）
-# 或使用符号链接
-ln -s ../node_modules node_modules
-
-# 更好的方式：配置 npm 缓存
-npm install --cache-dir=../.npm-cache
-```
-
-### Q3: IDE 编译冲突（如 Java、C++ 项目）
-```bash
-# 为每个工作树使用不同的 build 目录
-# CMakeLists.txt 示例
-set(CMAKE_BINARY_DIR "${PROJECT_SOURCE_DIR}/../build-${GIT_BRANCH}")
-```
-
-### Q4: 多人团队，如何同步工作树状态
-```bash
-# 创建 .git-worktrees.json 文件，共享配置
-{
-  "active_worktrees": [
-    {
-      "name": "wt-feature-123",
-      "branch": "feature/auth",
-      "owner": "alice",
-      "created_at": "2026-04-20"
-    }
-  ]
-}
-
-# 定期同步
-git pull
-git worktree prune
-```
-
----
-
-## 📊 性能对比
-
-| 操作 | 传统切换 | Git Worktree |
-|------|---------|-------------|
-| 分支切换 | 2-5秒 | 0秒（目录切换） |
-| 编译缓存命中 | 否（重编） | 是（命中率 80%+） |
-| 磁盘占用（含依赖） | ~500MB | ~1GB（多工作树） |
-| 同步时间 | N/A | <100ms |
-
----
-
-## 📋 Vibe Coding 工作流示例
-
-### 典型的一天
-
-```bash
-# 🌅 早上
-cd ~/project
-git worktree list                    # 查看现有工作树
-
-# 🎯 处理新任务
-git worktree add -b feature/dashboard ../wt-dashboard
-cd ../wt-dashboard
-npm install                          # 仅需要一次
-npm run dev                          # 开发服务器运行
-
-# 💬 收到 Code Review 反馈
-# 保持开发工作树继续运行
-cd ~/project
-git worktree add feature/auth ../wt-review-auth
-cd ../wt-review-auth                 # 检视同事代码
-# 无需关闭开发窗口，两个项目并行运行
-
-# 🚨 线上紧急 Bug
-git worktree add -b hotfix/payment ../wt-hotfix
-cd ../wt-hotfix
-npm run dev                          # 独立运行
-# 修复、测试、提交，然后删除
-
-# 🌆 下午总结
 git worktree list
-git worktree remove ../wt-review-auth
-git worktree remove ../wt-hotfix
+git worktree list --verbose
+```
+
+### 3) 删除工作树
+
+```bash
+# 正常删除
+git worktree remove ../wt-feature-123
+
+# 若存在未提交改动，使用 -f 强制删除
+git worktree remove -f ../wt-feature-123
+
+# 清理已失效记录
+git worktree prune
+```
+
+### 4) 锁定与解锁
+
+```bash
+git worktree lock ../wt-release --reason "release freeze"
+git worktree unlock ../wt-release
+```
+
+---
+
+## 推荐目录规划
+
+建议将工作树放在仓库同级目录，统一以 wt- 前缀命名。
+
+```text
+repo/
+  .git/
+  src/
+  package.json
+
+../wt-feature-123-login/
+../wt-bugfix-456-crash/
+../wt-review-checkout/
+```
+
+命名建议：
+
+- 功能分支：wt-feature-<issue>-<desc>
+- 缺陷修复：wt-bugfix-<issue>-<desc>
+- 评审验证：wt-review-<branch>
+- 紧急修复：wt-hotfix-<issue>
+
+---
+
+## 团队标准流程（SOP）
+
+### 场景 1：功能开发
+
+```bash
+git fetch origin
+git worktree add -b feature/123-login ../wt-feature-123 origin/main
+cd ../wt-feature-123
+pnpm install
+pnpm dev
+```
+
+### 场景 2：线上热修复（不中断当前开发）
+
+```bash
+git fetch origin
+git worktree add -b hotfix/789-payment ../wt-hotfix-789 origin/main
+cd ../wt-hotfix-789
+pnpm install
+pnpm test
+```
+
+### 场景 3：本地评审同事分支
+
+```bash
+git fetch origin
+git worktree add ../wt-review-checkout origin/feature/checkout
+cd ../wt-review-checkout
+pnpm install
+pnpm test
+```
+
+### 场景结束清理
+
+```bash
+cd ../repo
+git worktree remove ../wt-review-checkout
 git worktree prune
 ```
 
 ---
 
-## 🎓 学习资源
+## VS Code 协作建议
 
-- **官方文档**: `man git-worktree` 或 `git worktree --help`
-- **Git 官方**: https://git-scm.com/docs/git-worktree
-- **案例集**: 在团队 Confluence 中创建工作树使用案例库
-
----
-
-## 📞 技术支持
-
-遇到问题？
-
-1. **检查状态**: `git worktree list --verbose`
-2. **清理环境**: `git worktree prune`
-3. **查看日志**: `cd .git && grep -r "worktree" logs/`
-4. **联系技术负责人**: 在团队 Slack 中 @tech-lead
+1. 使用多根工作区把主仓库和常用工作树一起打开。
+2. 给每个工作树单独分配端口、调试配置和环境变量。
+3. 在终端标题中标明分支名，避免在错误目录执行命令。
+4. 大型改动前先执行 git worktree list，确认自己在目标工作树。
 
 ---
 
-## 📝 更新日志
+## Do / Don’t
 
-| 版本 | 日期 | 变更 |
-|------|------|------|
-| v1.0 | 2026-04-26 | 初始版本发布 |
-| - | - | 包含基础用法、最佳实践、高级技巧 |
+### Do
+
+- 每个任务一个独立工作树。
+- 分支名与任务号绑定，便于追踪。
+- 任务结束后及时 remove + prune。
+- 在创建前先 git fetch，保证起点分支最新。
+
+### Don’t
+
+- 不要在多个工作树同时检出同一分支。
+- 不要长期保留无人维护的临时工作树。
+- 不要在不确认目录时直接提交或推送。
+- 不要把工作树路径写死到团队脚本中（改为参数化）。
 
 ---
 
-**最后更新**: 2026 年 4 月 26 日  
-**维护人**: 技术团队  
-**欢迎反馈和改进意见！**
+## 常见问题
+
+### Q1：提示分支已被其他工作树占用
+
+原因：同一分支已在另一工作树检出。
+
+处理：
+
+```bash
+git worktree list
+# 改用新分支，或先移除占用该分支的工作树
+```
+
+### Q2：工作树删除失败，提示有改动
+
+```bash
+git worktree remove -f ../wt-feature-123
+git worktree prune
+```
+
+注意：-f 会丢弃该工作树未提交改动。
+
+### Q3：目录已手动删除，列表仍显示
+
+```bash
+git worktree prune
+```
+
+### Q4：如何降低依赖重复安装成本
+
+建议优先使用包管理器缓存能力，而不是跨工作树硬链接依赖目录。
+
+```bash
+pnpm config set store-dir ../.pnpm-store
+```
+
+---
+
+## 跨平台命令提示
+
+### 删除目录
+
+- macOS/Linux：rm -rf ../wt-feature-123
+- PowerShell：Remove-Item -Recurse -Force ..\wt-feature-123
+
+优先使用 git worktree remove，而不是直接删目录。
+
+### 查看帮助
+
+- 通用：git worktree --help
+
+---
+
+## 可复制的团队别名
+
+在 Git 全局配置中加入：
+
+```ini
+[alias]
+  wtls = worktree list --verbose
+  wtpr = worktree prune
+  wtadd = worktree add
+  wtrm = worktree remove
+```
+
+使用示例：
+
+```bash
+git wtls
+git wtadd -b feature/321-search ../wt-feature-321 origin/main
+git wtrm ../wt-feature-321
+git wtpr
+```
+
+---
+
+## 维护信息
+
+- 文档版本：v2.0
+- 更新日期：2026-04-26
+- 维护建议：每次团队流程变化后，同步更新本指南
