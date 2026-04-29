@@ -84,6 +84,30 @@
   --navbar-height: 72px;
 }
 
+/* --- Light Theme Overrides --- */
+[data-theme="light"] {
+  --color-bg: #f8fafc;
+  --color-bg-elevated: #f1f5f9;
+  --color-bg-card: #ffffff;
+  --color-bg-card-hover: #f8fafc;
+  --color-surface: #e2e8f0;
+
+  --color-primary-glow: rgba(99, 102, 241, 0.12);
+
+  --color-text: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-muted: #94a3b8;
+  --color-text-inverse: #f1f5f9;
+
+  --color-border: rgba(15, 23, 42, 0.1);
+  --color-border-hover: rgba(15, 23, 42, 0.2);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 0 40px var(--color-primary-glow);
+}
+
 /* --- Reset & Base --- */
 *,
 *::before,
@@ -333,6 +357,30 @@ button {
   background: var(--color-text);
   border-radius: 1px;
   transition: all var(--transition-fast);
+}
+
+[data-theme="light"] .navbar {
+  background: rgba(248, 250, 252, 0.9);
+}
+
+.navbar__theme-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-base);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.navbar__theme-btn:hover {
+  background: var(--color-primary-glow);
+  border-color: var(--color-primary-light);
+  transform: scale(1.1);
 }
 
 @media (max-width: 768px) {
