@@ -28,3 +28,7 @@ npm-debug.log*
 
 # Agent reference spec
 git-worktree-spec.md
+
+# Python cache
+__pycache__/
+*.pyc
