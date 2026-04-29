@@ -26,5 +26,9 @@ npm-debug.log*
 # Vite
 *.local
 
+# Python
+**/__pycache__/
+*.pyc
+
 # Agent reference spec
 git-worktree-spec.md
