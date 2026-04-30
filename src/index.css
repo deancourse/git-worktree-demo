@@ -10,6 +10,7 @@
   --color-bg-card: #1a2035;
   --color-bg-card-hover: #1f2847;
   --color-surface: #252d44;
+  --color-navbar-bg: rgba(10, 14, 26, 0.8);
 
   --color-primary: #6366f1;
   --color-primary-light: #818cf8;
@@ -82,6 +83,34 @@
   /* Layout */
   --container-max: 1200px;
   --navbar-height: 72px;
+}
+
+/* --- Light Theme --- */
+[data-theme="light"] {
+  --color-bg: #f8fafc;
+  --color-bg-elevated: #f1f5f9;
+  --color-bg-card: #ffffff;
+  --color-bg-card-hover: #f8fafc;
+  --color-surface: #e2e8f0;
+  --color-navbar-bg: rgba(248, 250, 252, 0.85);
+
+  --color-primary-light: #6366f1;
+  --color-primary-glow: rgba(99, 102, 241, 0.12);
+
+  --color-accent-light: #0891b2;
+
+  --color-text: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-muted: #94a3b8;
+  --color-text-inverse: #f1f5f9;
+
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-border-hover: rgba(0, 0, 0, 0.15);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 0 40px var(--color-primary-glow);
 }
 
 /* --- Reset & Base --- */
@@ -256,7 +285,7 @@ button {
   right: 0;
   height: var(--navbar-height);
   z-index: 1000;
-  background: rgba(10, 14, 26, 0.8);
+  background: var(--color-navbar-bg);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--color-border);
 }
@@ -318,6 +347,23 @@ button {
 
 .navbar__link:hover::after {
   width: 100%;
+}
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.theme-toggle:hover {
+  color: var(--color-primary-light);
+  background: var(--color-primary-glow);
 }
 
 .navbar__toggle {
@@ -432,7 +478,7 @@ button {
   font-weight: 800;
   line-height: 1.15;
   margin-bottom: var(--space-6);
-  background: linear-gradient(135deg, #fff 0%, var(--color-primary-light) 50%, var(--color-accent-light) 100%);
+  background: linear-gradient(135deg, var(--color-text) 0%, var(--color-primary-light) 50%, var(--color-accent-light) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
