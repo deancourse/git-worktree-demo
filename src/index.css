@@ -1070,6 +1070,103 @@ button {
 }
 
 /* ========================================
+   FAQ
+   ======================================== */
+.faq {
+  padding: var(--space-24) 0;
+  background: var(--color-bg-elevated);
+}
+
+.faq__list {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.faq__item {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-base);
+  overflow: hidden;
+}
+
+.faq__item:hover {
+  border-color: var(--color-border-hover);
+}
+
+.faq__item--open {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-glow);
+}
+
+.faq__question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--space-5) var(--space-6);
+  text-align: left;
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-text);
+  gap: var(--space-4);
+  transition: color var(--transition-fast);
+}
+
+.faq__question:hover {
+  color: var(--color-primary-light);
+}
+
+.faq__question-text {
+  flex: 1;
+}
+
+.faq__icon {
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+  transition: transform var(--transition-base);
+}
+
+.faq__icon--open {
+  transform: rotate(45deg);
+}
+
+.faq__answer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--transition-base);
+}
+
+.faq__answer--open {
+  grid-template-rows: 1fr;
+}
+
+.faq__answer-inner {
+  overflow: hidden;
+}
+
+.faq__answer-text {
+  padding: 0 var(--space-6) var(--space-5);
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  font-size: var(--text-sm);
+}
+
+@media (max-width: 480px) {
+  .faq__question {
+    padding: var(--space-4);
+    font-size: var(--text-sm);
+  }
+
+  .faq__answer-text {
+    padding: 0 var(--space-4) var(--space-4);
+  }
+}
+
+/* ========================================
    CTA BANNER
    ======================================== */
 .cta-banner {
